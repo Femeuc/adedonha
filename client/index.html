@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    <title>Adedonha</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="./script.js"></script>
+    <script defer src="handlers.js"></script>
+    <script defer src="./socketio_events.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!--#region Home page -->
+    <div id="home_page">
+        <section>
+            <h2>Adedonha</h2>
+            <div id="enter_room">
+                <input type="text" placeholder="Seu nome..." autofocus id="username_input">
+                <input type="text" placeholder="Nome da sala..." id="room_name_input">
+                <div>
+                    <button onclick="create_room()">Criar</button>
+                    <button onclick="enter_room()">Entrar</button>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!--#endregion-->
+
+   <div id="main_page">
+    <div id="left_sidebar" class="vertical_octagon">
+        <div>
+            <svg class="nail_icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/> </svg>
+            <ul>
+                
+            </ul>
+            <svg class="nail_icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/> </svg>
+        </div>
+    </div>
+
+     <main>
+        <section id="preferences">
+            <!--#region Alphabet Letters -->
+            <div>
+                <h2>Letras permitidas</h2>
+                <div id="letters">
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>A</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>B</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>C</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>D</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>E</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>F</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>G</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox"> <input type="checkbox"> </span>
+                        <span>H</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>I</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>J</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox"> <input type="checkbox"> </span>
+                        <span>K</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>L</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>M</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>N</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>O</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>P</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox"> <input type="checkbox"> </span>
+                        <span>Q</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>R</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>S</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>T</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>U</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox checked"> <input type="checkbox" checked> </span>
+                        <span>V</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox"> <input type="checkbox"> </span>
+                        <span>X</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox"> <input type="checkbox"> </span>
+                        <span>W</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox"> <input type="checkbox"> </span>
+                        <span>Y</span>
+                    </span>
+                    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+                        <span class="checkbox"> <input type="checkbox"> </span>
+                        <span>Z</span>
+                    </span>
+                </div>
+            </div>
+            <!-- #endregion-->
+            <!--#region Default topics-->
+            <div>
+                <h2>Temas padrões</h2>
+                <div id="default">
+                </div>
+            </div>
+            <!--#endregion-->
+            <!--#region Custom topics-->
+            <div id="custom_topics_div">
+                <h2>Temas personalizados</h2>
+                <div id="custom">
+                </div>
+            </div>
+            <!--#endregion-->
+            <div id="add_custom_topic_div" class="host_only">
+                <input type="text" placeholder="Tema personalizado..." id="custom_topic">
+                <button id="custom_topic" onclick="add_custom_topic()">Adicionar</button>
+                <button id="start_button" onclick="start_game()">Começar</button>
+            </div>
+        </section>
+       
+        <!--#region Validation -->
+        <section id="validation">
+            <h2>LETRA <span class="type_dash">&nbsp;&nbsp;&nbsp;</span></h2>
+            <div id="inputs_div">
+                <label class="input-div" for="cb1">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span style="background-image: url('./images/correct_sign.PNG'); background-size:cover;"><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div" for="cb1">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span style="background-image: url('./images/correct_sign.PNG'); background-size:cover;"><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div" for="cb1">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span style="background-image: url('./images/correct_sign.PNG'); background-size:cover;"><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div" for="cb1">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span style="background-image: url('./images/correct_sign.PNG'); background-size:cover;"><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div" for="cb1">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span><input type="checkbox" id="cb1"></span>
+                </label>
+                <label class="input-div">
+                    <div>CEP</div>
+                    <input type="text">
+                    <span style="background-image: url('./images/correct_sign.PNG'); background-size:cover;"><input type="checkbox" id="cb1"></span>
+                </label>
+            </div>
+            <button>PRÓXIMO</button>
+        </section>
+        <!--#endregion-->
+     </main>
+
+     <div id="right_sidebar">
+        <h3>Bate-papo</h3>
+        <ul id="chat">
+        </ul>
+        <input type="text" placeholder="Mensagem..." id="send_message">
+     </div>
+
+   </div>
+</body>
+</html>
