@@ -23,8 +23,16 @@ socket.on('connect', () => {
             return;
         }
         console.log(msg);
+        document.body.style.pointerEvents = 'auto';
+        hide_reconnection_UI();
     });  
 });
+
+socket.on('connect_error', (error) => {
+    console.log(`connect_error: ${error}`);
+    document.body.style.pointerEvents = 'none';
+    display_trying_to_reconnect_UI();
+})
 
 on_page_load();
 function on_page_load() {
@@ -89,3 +97,55 @@ function enter_room() {
         console.log(`did succeed? ${did_succeed} -> ${message}`);
     });
 }
+
+/* #region HTML by javascript */
+function display_trying_to_reconnect_UI() {
+    if( document.querySelector('#reconnection') ) {
+        return;
+    }
+    const reconnection_div = get_reconnection_html();
+    document.body.insertBefore(reconnection_div, document.body.firstChild);
+}
+
+function get_reconnection_html() {
+    const div = document.createElement('DIV');
+    //#region DIV styling 
+    div.id = 'reconnection';
+    div.style.position = 'absolute';
+    div.style.zIndex = 2;
+    div.style.width = 'fit-content';
+    div.style.margin = '0px auto';
+    div.style.right = '0';
+    div.style.left = '0';
+    div.style.top = '0';
+    div.style.padding = '10px 32px';
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.borderRadius = '100px';
+    div.style.marginTop = '1em';
+    div.style.backgroundColor = 'var(--Outline)';
+    div.innerHTML = `
+        <div class="loader" style="
+                                border: 5px solid #7babb2;
+                                border-top: 5px solid #ffffff;
+                                border-radius: 50%;
+                                width: 30px;
+                                height: 30px;
+                                animation: spin 1s linear infinite;
+                                margin-right: 5px;">
+        </div>
+        <div style="margin-left: 5px; font-size: 22px;">
+            Reconectando...
+        </div>
+    `
+    //#endregion
+    return div;
+}
+function hide_reconnection_UI() {
+    const div = document.querySelector('#reconnection');
+    if(!div) {
+        return;
+    }   
+    div.style.display = 'none';
+}
+// #endregion 
