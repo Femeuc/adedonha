@@ -46,6 +46,22 @@ function on_page_load() {
     }
 }
 
+// On chat message
+document.querySelector("#send_message").addEventListener("keydown", function(event) {
+    //let ul_chat = document.querySelector('ul#chat');
+    if(event.target.value.length < 1) return;
+    if (event.key === "Enter") {
+        const message = event.target.value.trim();
+        const username = localStorage.getItem('username');
+        update_chat_message(`<li><span class="sender">${username}</span>: ${message}</li>`);
+        console.log(`MESSAGE SENT: ${message}`);
+        socket.emit('CHAT_MESSAGE', username, message, msg => {
+            console.log(msg);
+        });
+        event.target.value = '';
+    }
+});
+
 function get_server_state() {
     socket.emit('SERVER_STATE', state => {
         console.log(state);
@@ -65,13 +81,15 @@ function create_room() {
         room_name,
         user_id: localStorage.getItem('user_id')
     }
-    socket.emit('CREATE_ROOM', user_obj, ( did_succeed, message ) => {
+    socket.emit('CREATE_ROOM', user_obj, ( did_succeed, message, room_obj ) => {
         if(!did_succeed) {
             alert(message);
+            return;
         }
         localStorage.setItem('username', username);
         localStorage.setItem('room_name', room_name);
         console.log(`did succeed? ${did_succeed} -> ${message}`);
+        handle_enter_room(room_obj);
     });
 }
 
@@ -88,14 +106,74 @@ function enter_room() {
         room_name,
         user_id: localStorage.getItem('user_id')
     }
-    socket.emit('ENTER_ROOM', user_obj, ( did_succeed, message ) => {
+    socket.emit('ENTER_ROOM', user_obj, ( did_succeed, message, room_obj ) => {
         if(!did_succeed) {
             alert(message);
+            return;
         }
         localStorage.setItem('username', username);
         localStorage.setItem('room_name', room_name);
+        handle_enter_room(room_obj);
         console.log(`did succeed? ${did_succeed} -> ${message}`);
     });
+}
+
+function get_host( users ) {
+    for (let i = 0; i < users.length; i++) {
+        if( users[i].is_host ) {
+            return users[i];
+        }
+    }
+}
+
+function get_random_avatar_name() {
+    const max = 11;
+    const min = 0;
+    const n = Math.floor(Math.random() * (max + 1)) + min;
+    return `among_${ n }.PNG`;
+}
+
+function toggle_checkbox( span ) {
+    const input_span = span.querySelectorAll('span')[0];
+    const name = span.querySelectorAll('span')[1];
+    const input = input_span.querySelector('input');
+    const type = span.parentNode.id;
+    input_span.classList.toggle("checked");
+    input.checked = input_span.classList.contains("checked");
+    socket.emit('CHECKBOX_CHANGE', {
+        name: name.innerText, 
+        checked: input.checked, 
+        type: type
+    }, localStorage.getItem('room_name'), msg => {
+        console.log(`CHECKBOX_CHANGE: ${name.innerText} is ${input.checked}`);
+    });
+}
+
+function add_custom_topic() {
+    const div = document.querySelector('#custom_topics_div');
+    const input = document.querySelector('#custom_topic');
+    if(input.value.length < 1 ) return;
+    div.innerHTML += `
+        <span class="checkbox_container" onclick="toggle_checkbox(this)">
+            <span class="checkbox checked"> <input type="checkbox" checked> </span>
+            <span>${input.value}</span>
+        </span>
+    `;
+
+    const checkbox = {
+        name: input.value, 
+        checked: true, 
+        type: 'custom'
+    }
+    const room_name = localStorage.getItem('room_name');
+
+    socket.emit('NEW_CHECKBOX', checkbox, room_name, (msg, checkboxes) => {
+        console.log(msg);
+        if(checkboxes) {
+            update_checkboxes(checkboxes);
+        }
+    });
+    input.value = '';
 }
 
 /* #region HTML by javascript */
@@ -147,5 +225,46 @@ function hide_reconnection_UI() {
         return;
     }   
     div.style.display = 'none';
+}
+
+function get_player_element( i, users ) {
+    const user_id = localStorage.getItem('user_id');
+    let html_string = '<div class="player" style="';
+    if( user_id == users[i].user_id ) {
+        html_string += `box-shadow: 0px 0px 5px 5px #0e593e;`;
+    } 
+    html_string += `">`;
+    if( users[i].is_host ) {
+        html_string += `<div style="
+            background-image: url(./images/crown.png);
+            aspect-ratio: 1 / 1;  
+            width: 30px;
+            background-size: contain;
+            position: absolute;
+            top: -7px;
+            left: -7px;
+            z-index: 2;
+        "></div>`;
+    }
+    html_string += `
+        <img src="./images/${get_random_avatar_name()}" alt="">
+        <div>
+          <div>0pts.</div>
+         <span>${users[i].name}</span>
+        </div>
+    </div>`;
+    return html_string;
+}
+function get_checkbox_span_html(name, checkboxes) {
+    let checked = '';
+    if (checkboxes[name]) {
+        checked = 'checked';
+    }
+
+    return `
+    <span class="checkbox_container" onclick="toggle_checkbox(this)">
+        <span class="checkbox ${checked}"> <input type="checkbox" ${checked}> </span>
+        <span>${name}</span>
+    </span>`;
 }
 // #endregion 

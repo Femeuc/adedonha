@@ -48,6 +48,18 @@ io.on('connection', (socket) => {
         handle_enter_room(socket, user_obj, callback);
     });
 
+    socket.on('CHECKBOX_CHANGE', (checkbox, room_name, callback) => {
+        handle_checkbox_change(socket, checkbox, room_name, callback);
+    });
+
+    socket.on('NEW_CHECKBOX', (checkbox, room_name, callback) => {
+        handle_new_checkbox(socket, checkbox, room_name, callback);
+    });
+
+    socket.on('CHAT_MESSAGE', (username, message, callback) => {
+        handle_chat_message( socket, username, message, callback );
+    });
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -75,8 +87,9 @@ function handle_disconnection(socket) {
     const room_name = rooms.get_room_name_by_socket_id( socket.id );
     if( !room_name ) { return; }
 
+    const user = rooms.get_user_by_socket_id_in_room( socket.id, room_name );
     rooms.disconnect_user( socket.id );
-    io.to(room_name).emit('LEFT_ROOM');
+    io.to(room_name).emit('LEFT_ROOM', user, rooms.get_room_by_name(room_name));
     socket.leave(room_name);
     console.log(`Disconnected ${socket.id} from room ${room_name}`);
 }
@@ -102,11 +115,11 @@ function handle_room_creation(socket, user_obj, callback) {
         is_connected: true
     }
 
-    rooms.create_room_with_user(room_name, user);
+    const room_obj = rooms.create_room_with_user(room_name, user);
     socket.join(room_name);
 
     const msg = `CREATE_ROOM: user ${user.name} joins room ${room_name} as host`;
-    callback(true, msg);
+    callback(true, msg, room_obj);
     console.log(msg);
 }
 function handle_enter_room( socket, user_obj, callback ) {
@@ -133,10 +146,11 @@ function handle_enter_room( socket, user_obj, callback ) {
         }
         rooms.add_user(room_name, user);
         socket.join(room_name);
-        io.to(room_name).emit('ENTER_ROOM');
-    
+
         const msg = `ENTER_ROOM: user ${user.name} enters room ${room_name}`;
-        callback(true, msg);
+        const room = rooms.get_room_by_name(room_name);
+        socket.to(room_name).emit('ENTER_ROOM', msg, room, username);
+        callback(true, msg, room);
         console.log(msg);
         return;
     }
@@ -158,14 +172,84 @@ function handle_enter_room( socket, user_obj, callback ) {
     // reconnects user
     rooms.reconnect_user( user, (did_succeed, msg) => {
         if( !did_succeed ) {
+            callback(false, msg);
             console.log(msg);
             return;
         }
 
         socket.join(room_name);
-        io.to(room_name).emit('ENTER_ROOM');
-        callback(true, msg);
+        const room = rooms.get_room_by_name(room_name);
+        socket.to(room_name).emit('ENTER_ROOM', msg, room, username);
+        callback(true, msg, room);
         console.log(msg);
     });
+}
+function handle_checkbox_change( socket, checkbox, room_name, callback ) {
+    const host = rooms.get_room_host(room_name);
+    if(host.id != socket.id) {
+        callback(`checkbox_change FAIL: only the host has permission`);
+        return;
+    }
+
+    rooms.change_checkbox( checkbox, room_name, (did_succeed, msg) => {
+        if( !did_succeed ) {
+            callback(msg);
+            return;
+        }
+        socket.to(room_name).emit('CHECKBOX_CHANGE', rooms.get_room_checkboxes(room_name) );
+        callback(msg);
+    });
+}
+function handle_new_checkbox( socket, checkbox, room_name, callback ) {
+    const host = rooms.get_room_host(room_name);
+    const checkboxes = rooms.get_room_checkboxes( rooms.get_room_name_by_socket_id(socket.id) );
+    if(!host) {
+        if(!checkboxes) {
+            callback(`new_checkbox FAIL: room not found`);
+            return;
+        }
+        callback(`new_checkbox FAIL: room not found`, checkboxes);
+        return;
+    }
+    if(host.id != socket.id) {
+        if(!checkboxes) {
+            callback(`new_checkbox FAIL: only the host has permission`);
+            return;
+        }
+        callback(`new_checkbox FAIL: only the host has permission`, checkboxes);
+        return;
+    }
+    if(!checkboxes) {
+        callback(`new_checkbox FAIL: make sure you are in the right room and that you are the host`);
+        return;
+    }
+
+    rooms.create_checkbox( checkbox, room_name, (did_succeed, msg) => {
+        if( !did_succeed ) {
+            callback(msg, checkboxes);
+            return;
+        }
+        socket.to(room_name).emit('NEW_CHECKBOX', checkboxes );
+        callback(msg);
+        console.log(msg);
+    });
+}
+function handle_chat_message( socket, username, message, callback ) {
+    const room_name = rooms.get_room_name_by_socket_id( socket.id );
+    const message_li = rooms.get_message_li(
+        username, 
+        message, 
+        room_name, 
+        (did_succeed, msg) => {
+            if( !did_succeed ) {
+                callback(msg);   
+                return;
+            }
+    });
+    if(!message_li) return;
+    socket.to(room_name).emit('CHAT_MESSAGE', message_li);
+    const msg = `CHAT MESSAGE: ${message_li}`;
+    callback(msg);
+    console.log(msg);
 }
 // #endregion
