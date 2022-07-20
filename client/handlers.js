@@ -74,3 +74,13 @@ function update_chat_on_left_room( username, users ) {
     if( username != host.username ) return;
     update_chat_bar(`${host.name} é o novo HOST`);
 }
+function handle_start() {
+    document.querySelector('#preferences').style.display = 'none';
+    document.querySelector('#answers').style.display = 'flex';
+    start_choosing_letter_animation();
+}
+function handle_chosen_letter(chosen_letter) {
+    clearInterval(choosing_letter_interval);
+    document.querySelector('#answers .chosen_letter').innerText = chosen_letter;
+    update_chat_bar(`${chosen_letter} foi a letra escolhida. Boa sorte!`);
+}

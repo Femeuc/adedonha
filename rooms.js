@@ -190,7 +190,7 @@ function change_checkbox( checkbox, room_name, callback ) {
         callback(false, `checkbox_change FAIL: type must be "letters" or "default" or "custom"`);
         return;
     }
-    if(name.length < 0) {
+    if(!name) {
         callback(false, `checkbox_change FAIL: name of checkbox not specified`);
         return;
     }
@@ -226,6 +226,40 @@ function get_message_li( username, message, room_name, callback ) {
 }
 // #endregion
 
+// #region Game functions
+function choose_random_letter(room_name, callback) {
+    const letters_list = [];
+    const letters = rooms[room_name].checkboxes.letters;
+    if(!letters) {
+        callback(false, `Could not found letters for room ${room_name}`);
+        return;
+    }
+
+    for (const letter in letters) {
+        if(letters[letter]) {
+            letters_list.push(letter);
+        }
+    }
+    const random_int = Math.floor(Math.random() * letters_list.length);
+    const chosen_letter = letters_list[random_int];
+
+    const checkbox = {
+        type: 'letters',
+        name: chosen_letter,
+        checked: false
+    }
+    change_checkbox( checkbox, room_name, (did_succeed, msg) => {
+        if(!did_succeed) {
+            callback(false, '213432432432143243214324');
+            return;
+        }
+        console.log(`SUCCESS: choose_random_letter() to change_checkbox() -> ${msg}`);
+    });
+    callback(true, `"START SUCCESS: random letter already chosen`);
+    return chosen_letter;
+}
+//
+
 module.exports = { 
     // VARIABLE
     rooms, 
@@ -260,5 +294,10 @@ module.exports = {
     // #endregion
 
     // #region Chat functions
-    get_message_li
+    get_message_li,
+    //#endregion
+
+    // #region Game functions
+    choose_random_letter
+    //#endregion
 }

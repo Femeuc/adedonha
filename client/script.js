@@ -1,5 +1,6 @@
 var socket = io();
 let is_connected = false;
+let choosing_letter_interval;
 
 socket.on('connect', () => {
     if(!is_connected) {
@@ -174,6 +175,25 @@ function add_custom_topic() {
         }
     });
     input.value = '';
+}
+
+function start() {
+    socket.emit('START', msg => {
+        console.log(msg);
+    });
+}
+
+function start_choosing_letter_animation() {
+    const letter_span = document.querySelector('#answers .chosen_letter');
+    const letters = [
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+        "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z"
+    ]
+
+    choosing_letter_interval = setInterval(function () {
+        const random_int = Math.floor( Math.random() * letters.length );
+        letter_span.innerText = letters[random_int];
+    }, 50);
 }
 
 /* #region HTML by javascript */

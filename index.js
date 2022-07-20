@@ -60,6 +60,10 @@ io.on('connection', (socket) => {
         handle_chat_message( socket, username, message, callback );
     });
 
+    socket.on('START', (callback) => {
+        handle_start(socket, callback);
+    });
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -251,5 +255,31 @@ function handle_chat_message( socket, username, message, callback ) {
     const msg = `CHAT MESSAGE: ${message_li}`;
     callback(msg);
     console.log(msg);
+}
+function handle_start(socket, callback, delay = 3000) {
+    const room_name = rooms.get_room_name_by_socket_id( socket.id );
+    if(!room_name) {
+        callback(`User must be in the room in order to start game`);
+        return;
+    }
+
+    const random_letter = rooms.choose_random_letter(room_name, (did_succeed, msg) => {
+        if(!did_succeed) {
+            callback(msg);
+            return;
+        }
+        callback(msg);
+        console.log(msg);
+    });
+    if(!random_letter) {
+        callback(`You need to choose at least one letter`);
+        return;
+    }
+
+    io.to(room_name).emit('START', delay);
+
+    setTimeout(() => {  
+        io.to(room_name).emit('CHOSEN_LETTER', random_letter);
+    }, delay);
 }
 // #endregion
