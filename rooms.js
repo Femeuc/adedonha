@@ -17,7 +17,12 @@ const rooms = {
             default: {Animal: true, CEP: true, etc.},
             custom: {jogo: false, rimas: true, etc...}
         }
-        history: {}
+        history: [
+            {
+                chosen_letter: 'A',
+                chosen_topics: []
+            }
+        ]
     } */
 }
 
@@ -32,7 +37,7 @@ function create_room( name ) {
             default: { Animal: true, Fruta: true, Nome: true, FVL: true, CEP: true, Objeto: true },
             custom:  { Time_futebol: true, Rima_com_ÃO: true, Rima_com_ADE: true, Rima_com_EZA: true, Cor: false }
         },
-        history: {}
+        history: []
     }
     return rooms[name];
 }
@@ -191,7 +196,7 @@ function change_checkbox( checkbox, room_name, callback ) {
         return;
     }
     if(!name) {
-        callback(false, `checkbox_change FAIL: name of checkbox not specified`);
+        callback(false, `checkbox_change FAIL: name of checkbox is not valid`);
         return;
     }
 
@@ -243,20 +248,52 @@ function choose_random_letter(room_name, callback) {
     const random_int = Math.floor(Math.random() * letters_list.length);
     const chosen_letter = letters_list[random_int];
 
-    const checkbox = {
-        type: 'letters',
-        name: chosen_letter,
-        checked: false
+    if(!chosen_letter) {
+        callback(false, `Escolha pelo menos uma letra`);
+        return;
     }
-    change_checkbox( checkbox, room_name, (did_succeed, msg) => {
-        if(!did_succeed) {
-            callback(false, '213432432432143243214324');
-            return;
-        }
-        console.log(`SUCCESS: choose_random_letter() to change_checkbox() -> ${msg}`);
-    });
     callback(true, `"START SUCCESS: random letter already chosen`);
+
     return chosen_letter;
+}
+function choose_random_topics(room_name, callback) {
+    const checkboxes = rooms[room_name].checkboxes;
+    const deflt = [];
+    const custom = [];
+
+    if(!checkboxes) {
+        callback(false, `Did not find checkboxes for room ${room_name}`);
+        return;
+    }
+
+    for (const topic in checkboxes.default) { 
+        if(!checkboxes.default[topic]) continue;
+        deflt.push(topic); 
+    }
+    for (const topic in checkboxes.custom) { 
+        if(!checkboxes.custom[topic]) continue;
+        custom.push(topic); 
+    }
+
+    const both = deflt.concat(custom);
+    if(both.length < 1) {
+        callback(false, `Escolha pelo menos 1 assunto`);
+        return;
+    }
+
+    const chosen_topics = [];
+
+    for (let i = 0; i < 9; i++) {    
+        const random_int = Math.floor( Math.random() * both.length );
+        chosen_topics.push(both[random_int]);
+    }
+    
+    callback(true, `chosen topics ${chosen_topics}`);
+    return chosen_topics;
+}
+function add_to_history( room_name, history ) {
+    const length = rooms[room_name].history.push(history);
+    return rooms[room_name].history[ length - 1 ];
 }
 //
 
@@ -298,6 +335,8 @@ module.exports = {
     //#endregion
 
     // #region Game functions
-    choose_random_letter
+    choose_random_letter,
+    choose_random_topics,
+    add_to_history
     //#endregion
 }

@@ -74,13 +74,28 @@ function update_chat_on_left_room( username, users ) {
     if( username != host.username ) return;
     update_chat_bar(`${host.name} é o novo HOST`);
 }
-function handle_start() {
+function handle_start(room_obj, delay) {
     document.querySelector('#preferences').style.display = 'none';
     document.querySelector('#answers').style.display = 'flex';
-    start_choosing_letter_animation();
+    start_choosing_letter_animation(room_obj.checkboxes);
+    start_choosing_topics_animation(room_obj.checkboxes);
 }
-function handle_chosen_letter(chosen_letter) {
+function handle_chosen_data(chosen_data) {
     clearInterval(choosing_letter_interval);
-    document.querySelector('#answers .chosen_letter').innerText = chosen_letter;
-    update_chat_bar(`${chosen_letter} foi a letra escolhida. Boa sorte!`);
+    clearInterval(choosing_topics_interval);
+
+    document.querySelector('#answers .chosen_letter').innerText = chosen_data.chosen_letter;
+    handle_chosen_topics(chosen_data.chosen_topics);
+
+    const bot_message = `Letra >> ${chosen_data.chosen_letter} << `;
+    update_chat_bar(bot_message);
+    update_chat_bar(`(${chosen_data.chosen_topics.join(') (')})`);
+}
+
+function handle_chosen_topics(chosen_topics) {
+    const topic_fields = document.querySelectorAll('#answers .input-div div');
+
+    for (let i = 0; i < chosen_topics.length; i++) {
+        topic_fields[i].innerText = chosen_topics[i];
+    }
 }

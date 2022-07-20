@@ -263,23 +263,50 @@ function handle_start(socket, callback, delay = 3000) {
         return;
     }
 
-    const random_letter = rooms.choose_random_letter(room_name, (did_succeed, msg) => {
+    const chosen_letter = rooms.choose_random_letter(room_name, (did_succeed, msg) => {
         if(!did_succeed) {
             callback(msg);
             return;
         }
-        callback(msg);
         console.log(msg);
     });
-    if(!random_letter) {
+    if(!chosen_letter) {
         callback(`You need to choose at least one letter`);
         return;
     }
 
-    io.to(room_name).emit('START', delay);
+    const chosen_topics = rooms.choose_random_topics(room_name, (did_succeed, msg) => {
+        if(!did_succeed) {
+            callback(msg);
+            return;
+        }
+        console.log(msg);
+    });
+    if(!chosen_topics) {
+        callback(`You need to choose at least one topic`);
+        return;
+    }
+
+    const history = { chosen_letter, chosen_topics };
+    const chosen_data = rooms.add_to_history(room_name, history);
+
+    io.to(room_name).emit('START', rooms.get_room_by_name(room_name), delay);
 
     setTimeout(() => {  
-        io.to(room_name).emit('CHOSEN_LETTER', random_letter);
+        const checkbox = {
+            type: 'letters',
+            name: chosen_letter,
+            checked: false
+        }
+        rooms.change_checkbox( checkbox, room_name, (did_succeed, msg) => {
+            if(!did_succeed) {
+                callback(false, msg);
+                return;
+            }
+            console.log(`chosen letter ${chosen_letter} set to false`);
+        });
+        
+        io.to(room_name).emit('CHOSEN_DATA', chosen_data);
     }, delay);
 }
 // #endregion

@@ -1,6 +1,7 @@
 var socket = io();
 let is_connected = false;
 let choosing_letter_interval;
+let choosing_topics_interval;
 
 socket.on('connect', () => {
     if(!is_connected) {
@@ -139,6 +140,7 @@ function toggle_checkbox( span ) {
     const name = span.querySelectorAll('span')[1];
     const input = input_span.querySelector('input');
     const type = span.parentNode.id;
+    console.log(input_span, name, input, type);
     input_span.classList.toggle("checked");
     input.checked = input_span.classList.contains("checked");
     socket.emit('CHECKBOX_CHANGE', {
@@ -151,7 +153,7 @@ function toggle_checkbox( span ) {
 }
 
 function add_custom_topic() {
-    const div = document.querySelector('#custom_topics_div');
+    const div = document.querySelector('#custom');
     const input = document.querySelector('#custom_topic');
     if(input.value.length < 1 ) return;
     div.innerHTML += `
@@ -179,22 +181,60 @@ function add_custom_topic() {
 
 function start() {
     socket.emit('START', msg => {
-        console.log(msg);
+        alert(msg);
     });
 }
 
-function start_choosing_letter_animation() {
+function submit_answers() {
+    const answer_inputs = document.querySelectorAll('#answers .input-div input');
+    const answers = [];
+    answer_inputs.forEach(input => {
+        answers.push( input.value );
+        input.value = '';
+    });
+    socket.emit('ANSWERS_SUBMIT', msg => {
+        alert(msg);
+    });
+}
+
+/* #region Animations */
+function start_choosing_letter_animation(checkboxes) {
     const letter_span = document.querySelector('#answers .chosen_letter');
-    const letters = [
-        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-        "N", "O", "P", "Q", "R", "S", "T", "U", "V", "X", "W", "Y", "Z"
-    ]
+    const letters = [];
+    for (const letter in checkboxes.letters) {
+        if(!checkboxes.letters[letter]) continue;
+        letters.push(letter);
+    }
 
     choosing_letter_interval = setInterval(function () {
         const random_int = Math.floor( Math.random() * letters.length );
         letter_span.innerText = letters[random_int];
     }, 50);
 }
+function start_choosing_topics_animation(checkboxes) {
+    const deflt = [];
+    const custom = [];
+
+    for (const topic in checkboxes.default) { 
+        if(!checkboxes.default[topic]) continue;
+        deflt.push(topic); 
+    }
+    for (const topic in checkboxes.custom) { 
+        if(!checkboxes.custom[topic]) continue;
+        custom.push(topic); 
+    }
+
+    const both = deflt.concat(custom);
+    const topic_fields = document.querySelectorAll('#answers .input-div div');
+
+    choosing_topics_interval = setInterval(function () {
+        topic_fields.forEach( field => {
+            const random_int = Math.floor( Math.random() * both.length );
+            field.innerText = both[random_int];
+        });  
+    }, 50);
+}
+/* #endregion */
 
 /* #region HTML by javascript */
 function display_trying_to_reconnect_UI() {

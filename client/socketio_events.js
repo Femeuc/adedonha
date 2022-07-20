@@ -26,11 +26,11 @@ socket.on('CHAT_MESSAGE', message_li => {
     update_chat_message(message_li);
 });
 
-socket.on('START', (delay) => {
-    handle_start();
+socket.on('START', (room_obj, delay) => {
+    handle_start(room_obj, delay);
     console.log(`START: waiting ${delay / 1000} seconds for chosen letter`);
 });
 
-socket.on('CHOSEN_LETTER', chosen_letter => {
-    handle_chosen_letter(chosen_letter);
+socket.on('CHOSEN_DATA', chosen_data => {
+    handle_chosen_data(chosen_data);
 });

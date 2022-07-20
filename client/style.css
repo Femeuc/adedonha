@@ -483,6 +483,7 @@ main h2 {
     background:#71db9c; 
     padding: 1px 4px;
     margin-right: 2px;
+    text-shadow: 0 0 2px black;
 }
 #right_sidebar input {
     padding: var(--size-0);
