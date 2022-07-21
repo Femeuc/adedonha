@@ -34,3 +34,7 @@ socket.on('START', (room_obj, delay) => {
 socket.on('CHOSEN_DATA', chosen_data => {
     handle_chosen_data(chosen_data);
 });
+
+socket.on('ANSWERS_SUBMIT', user => {
+    handle_answers_submit(user);
+});

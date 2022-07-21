@@ -20,7 +20,11 @@ const rooms = {
         history: [
             {
                 chosen_letter: 'A',
-                chosen_topics: []
+                chosen_topics: [],
+                answers: {
+                    user: [],
+                    user2: []
+                }
             }
         ]
     } */
@@ -174,7 +178,7 @@ function reconnect_user( user_obj, callback ) {
 function can_user_join_room( user_id, room ) {
     const users = get_users_from_room( room );
     for (let i = 0; i < users.length; i++) {
-        if( users[i].user_id == user_id) {
+        if( users[i].user_id == user_id && !users[i].is_connected) {
             return true;
         }
     }
@@ -295,6 +299,11 @@ function add_to_history( room_name, history ) {
     const length = rooms[room_name].history.push(history);
     return rooms[room_name].history[ length - 1 ];
 }
+function add_user_answers_to_history( room_name, username, answers) {
+    const length = rooms[room_name].history.length;
+    rooms[room_name].history[ length - 1 ].answers[username] = answers;
+    console.log(rooms[room_name].history[0].answers);
+}
 //
 
 module.exports = { 
@@ -337,6 +346,7 @@ module.exports = {
     // #region Game functions
     choose_random_letter,
     choose_random_topics,
-    add_to_history
+    add_to_history,
+    add_user_answers_to_history
     //#endregion
 }

@@ -64,6 +64,10 @@ io.on('connection', (socket) => {
         handle_start(socket, callback);
     });
 
+    socket.on('ANSWERS_SUBMIT', (answers, callback) => {
+        handle_answers_submit(socket, answers, callback);
+    });
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -80,7 +84,8 @@ function get_server_state() {
         sockets_connected: get_all_sockets_ids(),
         rooms: rooms.rooms,
     }
-    return state.rooms;
+    console.log(state.rooms.a);
+    return state.rooms.a;
 }
 
 // #region General functions 
@@ -287,7 +292,7 @@ function handle_start(socket, callback, delay = 3000) {
         return;
     }
 
-    const history = { chosen_letter, chosen_topics };
+    const history = { chosen_letter, chosen_topics, answers: {} };
     const chosen_data = rooms.add_to_history(room_name, history);
 
     io.to(room_name).emit('START', rooms.get_room_by_name(room_name), delay);
@@ -305,8 +310,32 @@ function handle_start(socket, callback, delay = 3000) {
             }
             console.log(`chosen letter ${chosen_letter} set to false`);
         });
-        
+
         io.to(room_name).emit('CHOSEN_DATA', chosen_data);
     }, delay);
+}
+function handle_answers_submit(socket, answers, callback) {
+    const room_name = rooms.get_room_name_by_socket_id( socket.id );
+    if(!room_name) {
+        callback(`User must be in the room`);
+        return;
+    }
+    const user = rooms.get_user_by_socket_id_in_room( socket.id, room_name );
+    if(!user) {
+        callback(`user não encontrado`);
+        return;
+    }
+
+    for (let i = 0; i < answers.length; i++) {
+        if(answers[i].length < 1) {
+            callback(`Nenhum campo pode ficar vazio`);
+            return;
+        }
+    }
+
+    socket.to(room_name).emit('ANSWERS_SUBMIT', user);
+    rooms.add_user_answers_to_history(room_name, user.name, answers);
+    
+    console.log(`user ${user.name} has stopped`);
 }
 // #endregion

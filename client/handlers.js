@@ -99,3 +99,7 @@ function handle_chosen_topics(chosen_topics) {
         topic_fields[i].innerText = chosen_topics[i];
     }
 }
+
+function handle_answers_submit(user) {
+    update_chat_bar(`<b>${user.name}</b> já terminou!`);
+}

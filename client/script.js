@@ -190,9 +190,8 @@ function submit_answers() {
     const answers = [];
     answer_inputs.forEach(input => {
         answers.push( input.value );
-        input.value = '';
     });
-    socket.emit('ANSWERS_SUBMIT', msg => {
+    socket.emit('ANSWERS_SUBMIT', answers, msg => {
         alert(msg);
     });
 }
