@@ -191,8 +191,14 @@ function submit_answers() {
     answer_inputs.forEach(input => {
         answers.push( input.value );
     });
-    socket.emit('ANSWERS_SUBMIT', answers, msg => {
-        alert(msg);
+    socket.emit('ANSWERS_SUBMIT', answers, (data, username) => {
+        if(typeof(data) == 'string') {
+            alert(data);
+            return;
+        }
+        document.querySelector('#answers').style.display = 'none';
+        document.querySelector('#validation').style.display = 'flex';
+        display_user_to_be_validated_data(username, data);
     });
 }
 

@@ -35,6 +35,9 @@ socket.on('CHOSEN_DATA', chosen_data => {
     handle_chosen_data(chosen_data);
 });
 
-socket.on('ANSWERS_SUBMIT', user => {
-    handle_answers_submit(user);
+socket.on('ANSWERS_SUBMIT', (username, answers) => {
+    update_chat_bar(`<b>${username}</b> já terminou!`);
+    document.querySelector('#answers').style.display = 'none';
+    document.querySelector('#validation').style.display = 'flex';
+    display_user_to_be_validated_data(username, answers);
 });

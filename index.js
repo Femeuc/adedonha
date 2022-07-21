@@ -292,7 +292,12 @@ function handle_start(socket, callback, delay = 3000) {
         return;
     }
 
-    const history = { chosen_letter, chosen_topics, answers: {} };
+    const history = { 
+        chosen_letter, 
+        chosen_topics, 
+        answers: {}, 
+        validated_users: {}
+    };
     const chosen_data = rooms.add_to_history(room_name, history);
 
     io.to(room_name).emit('START', rooms.get_room_by_name(room_name), delay);
@@ -332,10 +337,10 @@ function handle_answers_submit(socket, answers, callback) {
             return;
         }
     }
-
-    socket.to(room_name).emit('ANSWERS_SUBMIT', user);
     rooms.add_user_answers_to_history(room_name, user.name, answers);
-    
+    const added_answers = rooms.get_history_last_item_answers(room_name);
+    socket.to(room_name).emit('ANSWERS_SUBMIT', user.name, added_answers);
+    callback(added_answers, user.name);
     console.log(`user ${user.name} has stopped`);
 }
 // #endregion

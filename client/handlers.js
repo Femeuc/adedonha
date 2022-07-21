@@ -100,6 +100,10 @@ function handle_chosen_topics(chosen_topics) {
     }
 }
 
-function handle_answers_submit(user) {
-    update_chat_bar(`<b>${user.name}</b> já terminou!`);
+function display_user_to_be_validated_data( username, answers ) {
+    const inputs = document.querySelectorAll('#validation .input-div>input');
+    for (let i = 0; i < answers[username].length; i++) {
+        inputs[i].value = answers[username][i];
+        inputs[i].readOnly = true;
+    }
 }

@@ -295,6 +295,10 @@ function choose_random_topics(room_name, callback) {
     callback(true, `chosen topics ${chosen_topics}`);
     return chosen_topics;
 }
+function get_history_last_item_answers(room_name) {
+    const length = rooms[room_name].history.length;
+    return rooms[room_name].history[length-1].answers;
+}
 function add_to_history( room_name, history ) {
     const length = rooms[room_name].history.push(history);
     return rooms[room_name].history[ length - 1 ];
@@ -346,6 +350,7 @@ module.exports = {
     // #region Game functions
     choose_random_letter,
     choose_random_topics,
+    get_history_last_item_answers,
     add_to_history,
     add_user_answers_to_history
     //#endregion
