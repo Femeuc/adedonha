@@ -145,7 +145,17 @@ function handle_enter_room( socket, user_obj, callback ) {
         return;
     }
 
+    if(rooms.does_room_have_user_id_connected(room_name, user_id)) {
+        callback(false, `Você já está conectado em outra aba`);
+        return;
+    }
+
     if( !rooms.does_room_have_username(room_name, username) ) {
+        if(rooms.does_room_have_user_id(room_name, user_id)) {
+            callback(false, `Você precisa utilizar o mesmo nome para reconectar`);
+            return;
+        }
+
         const user = {
             id: socket.id,
             name: username,
@@ -164,12 +174,7 @@ function handle_enter_room( socket, user_obj, callback ) {
         return;
     }
 
-    // Maybe user lost connection and is trying to reconnect
-    if( !rooms.can_user_join_room( user_id, room_name )) {
-        callback(false, `${username} não está disponível na sala ${room_name}`);
-        return;
-    }
-
+    //reconnection
     const user = {
         id: socket.id,
         name: username,

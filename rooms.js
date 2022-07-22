@@ -74,6 +74,16 @@ function get_room_by_socket_id( id ) {
 function does_exist( name ) {
     return Boolean(get_room_by_name(name));
 }
+function does_room_have_user_id( room, user_id ) {
+    const users = get_users_from_room( room );
+
+    for (let i = 0; i < users.length; i++) {
+        if( users[i].user_id == user_id) {
+            return true;
+        }
+    }
+    return false;
+}
 function does_room_have_username( room, username ) {
     const users = get_users_from_room( room );
 
@@ -83,6 +93,17 @@ function does_room_have_username( room, username ) {
         }
     }
     return false;
+}
+function does_room_have_user_id_connected( room, user_id ) {
+    const users = get_users_from_room( room );
+
+    for (let i = 0; i < users.length; i++) {
+        if(!users[i].is_connected) continue;
+        if( users[i].user_id == user_id ) {
+            return true;
+        }
+    }
+    return false; 
 }
 function destroy_room( name ) {
     delete rooms[name];
@@ -174,15 +195,6 @@ function reconnect_user( user_obj, callback ) {
     user.is_connected = true;
     user.id = user_obj.id;
     callback( true, `user ${user_obj.name} has reconnected`);
-}
-function can_user_join_room( user_id, room ) {
-    const users = get_users_from_room( room );
-    for (let i = 0; i < users.length; i++) {
-        if( users[i].user_id == user_id && !users[i].is_connected) {
-            return true;
-        }
-    }
-    return false;
 }
 // #endregion
 
@@ -320,7 +332,9 @@ module.exports = {
     get_room_by_name,
     get_room_name_by_socket_id,
     does_exist,
+    does_room_have_user_id,
     does_room_have_username,
+    does_room_have_user_id_connected,
     get_room_by_socket_id,
     destroy_room,
     // #endregion
@@ -334,7 +348,6 @@ module.exports = {
     get_room_host,
     disconnect_user,
     reconnect_user,
-    can_user_join_room,
     // #endregion
 
     // #region Checkboxes functions
