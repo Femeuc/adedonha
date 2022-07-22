@@ -47,6 +47,7 @@ h2 {
     --padding-3: 5px 10px;
 
     --font-color: #ffffff;
+    --font-size: 16px;
     --dark-color: black;
 }
 .host_only {
@@ -397,13 +398,18 @@ main h2 {
     justify-items: center;
     width: var(--size-6);
 }
+#validation .input-div span {
+    cursor: pointer;
+    width: 2em;
+    height: 2em;
+}
 #validation label > div {
     display: block;
     text-align: center;
-    font-family: 'Titan One', cursive;
+    font-family: 'Titan One';
     font-size: var(--px-size-2);
     letter-spacing: 2px;
-    text-shadow: -1px -2px 0px black, -2px 1px 0px black, 2px 2px 0px black, 0px 3px 0px black;
+    color: black;
 }
 #validation label span {
     height: var(--size-3);
@@ -414,14 +420,21 @@ main h2 {
     background: var(--font-color);
     border-radius: 50px;
 }
+#validation .input_checked {
+    background-image: url('./images/correct_sign.PNG'); 
+    background-size:cover;
+}
 #validation input[type=text] {
     width: 100%;
     margin: auto;
     display: block;
-    padding: var(--size-0);
+    padding: var(--padding-3);
     background-color: var(--Bright-bg);
-    color: var(--font-color);
     grid-column: 1;
+    text-align: center;
+    font-size: var(--font-size);
+    color: var(--Outline);
+    font-weight: bold;
 }
 #validation input[type=checkbox] {
     opacity: 0;
@@ -431,18 +444,14 @@ main h2 {
     width: fit-content;
     margin: auto;
     margin-top: 10px;
-    padding: var(--padding-1);
+    padding: var(--padding-3);
     font-family: 'Titan One', cursive;
     border-radius: 8px;
-    height: 35px;
     margin-bottom: 24px;
     text-shadow: 0px 3px 0px rgb(0 0 0), 2px 2px 0px rgb(0 0 0), -2px 3px 0px rgb(0 0 0), -2px -2px 0px rgb(0 0 0), 2px -2px 0px rgb(0 0 0);
     color: var(--font-color);
     background-color: var(--Main-color);
     box-shadow: 0px 7px 0px 0px var(--Outline);
-    
-    
-    
 }
 /* #endregion */
 

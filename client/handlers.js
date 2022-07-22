@@ -100,10 +100,30 @@ function handle_chosen_topics(chosen_topics) {
     }
 }
 
-function display_user_to_be_validated_data( username, answers ) {
+function display_user_to_be_validated_data( username, validation_data ) {
+    const topics = document.querySelectorAll('#validation .input-div>div');
     const inputs = document.querySelectorAll('#validation .input-div>input');
-    for (let i = 0; i < answers[username].length; i++) {
-        inputs[i].value = answers[username][i];
+    const checkboxes = document.querySelectorAll('#validation .input-div span');
+
+    for (let i = 0; i < validation_data.length; i++) {
+        topics[i].innerText = validation_data[i].topic;
+        inputs[i].value = validation_data[i].answer;
         inputs[i].readOnly = true;
+        validation_data[i].checked ? checkboxes[i].classList.add('input_checked') : checkboxes[i].classList.remove('input_checked');
     }
+}
+
+function handle_users_who_havent_finished_answers() {
+    const answer_inputs = document.querySelectorAll('#answers .input-div input');
+    const answers = [];
+    answer_inputs.forEach(input => {
+        answers.push( input.value.trim() );
+    });
+    socket.emit('UNFINISHED_ANSWERS', answers);
+}
+
+function handle_validation_change(index, checked) {
+    const inputs = document.querySelectorAll('#validation span>input');
+    inputs[index].checked = checked;
+    checked ? inputs[index].parentNode.classList.add('input_checked') : inputs[index].parentNode.classList.remove('input_checked');
 }

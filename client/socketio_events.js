@@ -35,9 +35,14 @@ socket.on('CHOSEN_DATA', chosen_data => {
     handle_chosen_data(chosen_data);
 });
 
-socket.on('ANSWERS_SUBMIT', (username, answers) => {
+socket.on('ANSWERS_SUBMIT', (username, validation_data) => {
+    handle_users_who_havent_finished_answers();
     update_chat_bar(`<b>${username}</b> já terminou!`);
     document.querySelector('#answers').style.display = 'none';
     document.querySelector('#validation').style.display = 'flex';
-    display_user_to_be_validated_data(username, answers);
+    display_user_to_be_validated_data(username, validation_data);
+});
+
+socket.on('VALIDATION_CHANGE', (index, checked) => {
+    handle_validation_change(index, checked);
 });

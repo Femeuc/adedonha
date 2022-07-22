@@ -68,6 +68,14 @@ io.on('connection', (socket) => {
         handle_answers_submit(socket, answers, callback);
     });
 
+    socket.on('UNFINISHED_ANSWERS', (answers) => {
+        handle_unfinished_answers(socket, answers);
+    })
+
+    socket.on('VALIDATION_CHANGE', (index, checked, callback) => {
+        handle_validation_change(socket, index, checked, callback);
+    });
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -301,7 +309,7 @@ function handle_start(socket, callback, delay = 3000) {
         chosen_letter, 
         chosen_topics, 
         answers: {}, 
-        validated_users: {}
+        validated_users: []
     };
     const chosen_data = rooms.add_to_history(room_name, history);
 
@@ -343,9 +351,31 @@ function handle_answers_submit(socket, answers, callback) {
         }
     }
     rooms.add_user_answers_to_history(room_name, user.name, answers);
-    const added_answers = rooms.get_history_last_item_answers(room_name);
-    socket.to(room_name).emit('ANSWERS_SUBMIT', user.name, added_answers);
-    callback(added_answers, user.name);
+    const validation_data = rooms.get_history_last_item_validation_data(room_name);
+    socket.to(room_name).emit('ANSWERS_SUBMIT', user.name, validation_data);
+    callback(validation_data, user.name);
     console.log(`user ${user.name} has stopped`);
+}
+
+function handle_unfinished_answers(socket, answers) {
+    const room_name = rooms.get_room_name_by_socket_id(socket.id);
+    const username = rooms.get_user_by_id(socket.id).name;
+    if(!room_name) { console.log(`Precisa estar em uma sala.`); return; }
+    if(!username) { console.log('precisa ter um nome'); return; }
+
+    rooms.add_user_answers_to_history(room_name, username, answers);
+}
+
+function handle_validation_change(socket, index, checked, callback) {
+    const room_name = rooms.get_room_name_by_socket_id(socket.id);
+    if(!room_name) { callback(`Precisa estar em uma sala.`); return; }
+
+    const host = rooms.get_room_host(room_name);
+    if(host.id != socket.id) { callback(`only the host has permission`); return; }
+
+    const validations = rooms.change_validation_state(room_name, index, checked);
+    if(!validations) { callback('Validações não encontradas.'); return; }
+
+    socket.to(room_name).emit('VALIDATION_CHANGE', index, checked);
 }
 // #endregion

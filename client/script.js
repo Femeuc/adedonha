@@ -189,7 +189,7 @@ function submit_answers() {
     const answer_inputs = document.querySelectorAll('#answers .input-div input');
     const answers = [];
     answer_inputs.forEach(input => {
-        answers.push( input.value );
+        answers.push( input.value.trim() );
     });
     socket.emit('ANSWERS_SUBMIT', answers, (data, username) => {
         if(typeof(data) == 'string') {
@@ -199,6 +199,19 @@ function submit_answers() {
         document.querySelector('#answers').style.display = 'none';
         document.querySelector('#validation').style.display = 'flex';
         display_user_to_be_validated_data(username, data);
+    });
+}
+
+function on_validation_change(index) {
+    const input = document.querySelectorAll('#validation span>input')[index];
+    input.checked = !input.checked;
+    input.checked ? input.parentNode.classList.add('input_checked') : input.parentNode.classList.remove('input_checked');
+    socket.emit('VALIDATION_CHANGE', index, input.checked, msg => {
+        if(msg) {
+            alert(msg);
+            input.checked = !input.checked;
+            input.checked ? input.classList.add('input_checked') : input.classList.remove('input_checked');
+        }
     });
 }
 
