@@ -60,6 +60,7 @@ function update_host(users) {
     const host = get_host(users);
     if( localStorage.getItem('user_id') != host.user_id ) {
         document.querySelector('#preferences').style.pointerEvents = 'none';
+        document.querySelector('#validation').style.pointerEvents = 'none';
         users.forEach(user => {
             if(!user.is_connected) return;
             if(!user.is_host) {
@@ -78,6 +79,7 @@ function update_host(users) {
         e.classList.remove("host_only");
     });
     document.querySelector('#preferences').style.pointerEvents = 'auto';
+    document.querySelector('#validation').style.pointerEvents = 'auto';
 }
 function update_left_bar(users) {
     const players_ul = document.querySelector('#left_sidebar ul');
