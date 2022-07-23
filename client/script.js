@@ -210,7 +210,7 @@ function on_validation_change(index) {
         if(msg) {
             alert(msg);
             input.checked = !input.checked;
-            input.checked ? input.classList.add('input_checked') : input.classList.remove('input_checked');
+            input.checked ? input.parentNode.classList.add('input_checked') : input.parentNode.classList.remove('input_checked');
         }
     });
 }

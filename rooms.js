@@ -260,6 +260,7 @@ function change_validation_state( room_name, index, checked ) {
 
         validated_users[i].validations[index] = checked;
         validations = validated_users[i].validations;
+        break;
     }
     return validations;
 }
@@ -375,7 +376,6 @@ function get_history_last_item_validation_data(room_name) {
                     checked: validations[i]
                 });
             }
-            set_user_validation_state(room_name, user, true);
             validation_data.push(user);
             validation_data.push(data);
             return validation_data;
@@ -403,17 +403,19 @@ function set_validation_initial_state(room_name, username, answers) {
 }
 function set_user_validation_state(room_name, username, state) {
     const history = rooms[room_name].history[ rooms[room_name].history.length - 1];
-    
-    for (let i = 0; i < history.validated_users.length; i++) {
-        if(username == history.validated_users[i].username ) {
-            history.validated_users[i].validated = state;
-        }
-    }
     history.validated_users.forEach(element => {
         if(username == element.username ) {
             element.validated = state;
         }
     });
+}
+function get_current_username_being_validated(room_name) {
+    const history = rooms[room_name].history[ rooms[room_name].history.length - 1];
+    for (let i = 0; i < history.validated_users.length; i++) {
+        if(!history.validated_users[i].validated ) {
+            return history.validated_users[i].username;
+        }
+    }
 }
 function get_validations_initial_state(room_name, answers) {
     const length = rooms[room_name].history.length;
@@ -479,6 +481,8 @@ module.exports = {
     get_history_last_item_validation_data,
     add_to_history,
     add_user_answers_to_history,
+    set_user_validation_state,
+    get_current_username_being_validated,
     set_game_state
     //#endregion
 }

@@ -80,6 +80,10 @@ io.on('connection', (socket) => {
         handle_validate_next(socket, callback);
     });
 
+    socket.on('MATCH_SUMMARY', callback => {
+        handle_match_summary(socket, callback);
+    })
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -116,7 +120,7 @@ function handle_disconnection(socket) {
 }
 function handle_room_creation(socket, user_obj, callback) {
     const username = user_obj.username;
-    const room_name = user_obj.room_name;
+    const room_name = user_obj.room_name.toLowerCase();
     const user_id = user_obj.user_id;
 
     if( !(username && room_name && user_id) ) {
@@ -145,7 +149,7 @@ function handle_room_creation(socket, user_obj, callback) {
 }
 function handle_enter_room( socket, user_obj, callback ) {
     const username = user_obj.username;
-    const room_name = user_obj.room_name;
+    const room_name = user_obj.room_name.toLowerCase();
     const user_id = user_obj.user_id;
 
     if( !(username && room_name && user_id) ) {
@@ -358,8 +362,8 @@ function handle_answers_submit(socket, answers, callback) {
     rooms.add_user_answers_to_history(room_name, user.name, answers);
     const validation_data = rooms.get_history_last_item_validation_data(room_name);
     rooms.set_game_state(room_name, 2);
-    socket.to(room_name).emit('ANSWERS_SUBMIT', validation_data[1], validation_data[0]);
-    callback(validation_data, user.name);
+    socket.to(room_name).emit('ANSWERS_SUBMIT', validation_data[0], validation_data[1]);
+    callback(validation_data[1], validation_data[0]);
     console.log(`user ${user.name} has stopped`);
 }
 
@@ -391,14 +395,27 @@ function handle_validate_next(socket, callback) {
     const host = rooms.get_room_host(room_name);
     if(host.id != socket.id) { callback(false, `only the host has permission`); return; }
 
+    const current_username = rooms.get_current_username_being_validated(room_name);
+    rooms.set_user_validation_state(room_name, current_username, true);
+
     const validation_data =  rooms.get_history_last_item_validation_data(room_name);
     if(!validation_data) { // all users were validated
         callback(true, false);
         return;
     }
+
     const user = rooms.get_user_by_socket_id_in_room(socket.id, room_name);
     socket.to(room_name).emit('VALIDATE_NEXT', validation_data[0], validation_data[1]);
     callback(true, validation_data);
     console.log(`VALIDATE_NEXT: "${user.name}"`);
+}
+function handle_match_summary(socket, callback) {
+    const room_name = rooms.get_room_name_by_socket_id(socket.id);
+    if(!room_name) { callback(`Precisa estar em uma sala.`); return; }
+
+    const host = rooms.get_room_host(room_name);
+    if(host.id != socket.id) { callback(`only the host has permission`); return; }
+
+    io.to(room_name).emit('MATCH_SUMMARY');
 }
 // #endregion
