@@ -76,6 +76,10 @@ io.on('connection', (socket) => {
         handle_validation_change(socket, index, checked, callback);
     });
 
+    socket.on('VALIDATE_NEXT', callback => {
+        handle_validate_next(socket, callback);
+    });
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -314,7 +318,7 @@ function handle_start(socket, callback, delay = 3000) {
     const chosen_data = rooms.add_to_history(room_name, history);
 
     io.to(room_name).emit('START', rooms.get_room_by_name(room_name), delay);
-
+    rooms.set_game_state(room_name, 0.5); // random data animation
     setTimeout(() => {  
         const checkbox = {
             type: 'letters',
@@ -329,6 +333,7 @@ function handle_start(socket, callback, delay = 3000) {
             console.log(`chosen letter ${chosen_letter} set to false`);
         });
 
+        rooms.set_game_state(room_name, 1);
         io.to(room_name).emit('CHOSEN_DATA', chosen_data);
     }, delay);
 }
@@ -352,7 +357,8 @@ function handle_answers_submit(socket, answers, callback) {
     }
     rooms.add_user_answers_to_history(room_name, user.name, answers);
     const validation_data = rooms.get_history_last_item_validation_data(room_name);
-    socket.to(room_name).emit('ANSWERS_SUBMIT', user.name, validation_data);
+    rooms.set_game_state(room_name, 2);
+    socket.to(room_name).emit('ANSWERS_SUBMIT', validation_data[1], validation_data[0]);
     callback(validation_data, user.name);
     console.log(`user ${user.name} has stopped`);
 }
@@ -377,5 +383,22 @@ function handle_validation_change(socket, index, checked, callback) {
     if(!validations) { callback('Validações não encontradas.'); return; }
 
     socket.to(room_name).emit('VALIDATION_CHANGE', index, checked);
+}
+function handle_validate_next(socket, callback) {
+    const room_name = rooms.get_room_name_by_socket_id(socket.id);
+    if(!room_name) { callback(false, `Precisa estar em uma sala.`); return; }
+
+    const host = rooms.get_room_host(room_name);
+    if(host.id != socket.id) { callback(false, `only the host has permission`); return; }
+
+    const validation_data =  rooms.get_history_last_item_validation_data(room_name);
+    if(!validation_data) { // all users were validated
+        callback(true, false);
+        return;
+    }
+    const user = rooms.get_user_by_socket_id_in_room(socket.id, room_name);
+    socket.to(room_name).emit('VALIDATE_NEXT', validation_data[0], validation_data[1]);
+    callback(true, validation_data);
+    console.log(`VALIDATE_NEXT: "${user.name}"`);
 }
 // #endregion

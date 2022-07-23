@@ -442,12 +442,10 @@ main h2 {
 }
 #validation button {
     width: fit-content;
-    margin: auto;
-    margin-top: 10px;
+    margin: 10px 2em 24px auto;
     padding: var(--padding-3);
     font-family: 'Titan One', cursive;
     border-radius: 8px;
-    margin-bottom: 24px;
     text-shadow: 0px 3px 0px rgb(0 0 0), 2px 2px 0px rgb(0 0 0), -2px 3px 0px rgb(0 0 0), -2px -2px 0px rgb(0 0 0), 2px -2px 0px rgb(0 0 0);
     color: var(--font-color);
     background-color: var(--Main-color);

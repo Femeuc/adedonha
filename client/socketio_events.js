@@ -46,3 +46,7 @@ socket.on('ANSWERS_SUBMIT', (username, validation_data) => {
 socket.on('VALIDATION_CHANGE', (index, checked) => {
     handle_validation_change(index, checked);
 });
+
+socket.on('VALIDATE_NEXT', (username, validation_data) => {
+    display_user_to_be_validated_data(username, validation_data);
+});

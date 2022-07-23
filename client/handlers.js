@@ -4,11 +4,58 @@ function handle_enter_room(room_obj) {
     update_room(room_obj);
 }
 function update_room(room_obj) {
+    if(room_obj.game_state == 0.5) { load_game_state_0_5(room_obj); }
+    if(room_obj.game_state == 1) { load_game_state_1(room_obj); }
+    if(room_obj.game_state == 2) { load_game_state_2(room_obj); }
     update_host(room_obj.users);
     update_left_bar(room_obj.users);
     //update_chat_bar(room_obj.users);
     update_checkboxes(room_obj.checkboxes);
 }
+function load_game_state_0_5(room_obj) {
+    handle_start(room_obj);
+}
+function load_game_state_1(room_obj) {
+    document.querySelector('#preferences').style.display = 'none';
+    document.querySelector('#answers').style.display = 'flex';
+    const history = room_obj.history[ room_obj.history.length - 1 ];
+    handle_chosen_data(history);
+}
+function load_game_state_2(room_obj) {
+    document.querySelector('#preferences').style.display = 'none';
+    document.querySelector('#answers').style.display = 'none';
+    document.querySelector('#validation').style.display = 'flex';
+
+    const history = room_obj.history[ room_obj.history.length - 1];
+    let data = [];
+    const answers_obj = history.answers;
+    const topics = history.chosen_topics;
+    const validated_users = history.validated_users;
+    let validations;
+    let user_to_be_validated;
+    for (let i = 0; i < validated_users.length; i++) {
+        if( validated_users[i].validated ) continue;
+        validations = validated_users[i].validations;
+        user_to_be_validated = validated_users[i].username;
+        break;
+    }
+    for (const user in answers_obj) {
+        if(user != user_to_be_validated) continue;
+
+        for (let i = 0; i < topics.length; i++) {
+            data.push({
+                topic: topics[i],
+                answer: answers_obj[user][i],
+                checked: validations[i]
+            });
+        }
+        break;
+    }
+
+
+    display_user_to_be_validated_data(user_to_be_validated, data);
+}
+
 function update_host(users) {
     const host = get_host(users);
     if( localStorage.getItem('user_id') != host.user_id ) {
@@ -104,6 +151,7 @@ function display_user_to_be_validated_data( username, validation_data ) {
     const topics = document.querySelectorAll('#validation .input-div>div');
     const inputs = document.querySelectorAll('#validation .input-div>input');
     const checkboxes = document.querySelectorAll('#validation .input-div span');
+    document.querySelector('#user_span').innerText = username;
 
     for (let i = 0; i < validation_data.length; i++) {
         topics[i].innerText = validation_data[i].topic;
@@ -111,6 +159,7 @@ function display_user_to_be_validated_data( username, validation_data ) {
         inputs[i].readOnly = true;
         validation_data[i].checked ? checkboxes[i].classList.add('input_checked') : checkboxes[i].classList.remove('input_checked');
     }
+    update_chat_bar(`Validando ${username}`);
 }
 
 function handle_users_who_havent_finished_answers() {

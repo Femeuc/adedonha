@@ -215,6 +215,22 @@ function on_validation_change(index) {
     });
 }
 
+function validate_next() {
+    socket.emit('VALIDATE_NEXT', (did_succeed, result) => {
+        if(!did_succeed) {
+            alert(result);
+            return;
+        }
+        if(result) {
+            display_user_to_be_validated_data(result[0], result[1]);
+            return;
+        }
+        socket.emit('MATCH_SUMMARY', error => {
+            console.log(error);
+        });
+    });
+}
+
 /* #region Animations */
 function start_choosing_letter_animation(checkboxes) {
     const letter_span = document.querySelector('#answers .chosen_letter');

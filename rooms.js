@@ -245,12 +245,10 @@ function get_validation_state(room_name) {
     const length = rooms[room_name].history.length;
     const validated_users = rooms[room_name].history[length - 1].validated_users;
 
-    let validations;
     for (let i = 0; i < validated_users.length; i++) {
         if( validated_users[i].validated ) continue;
-        validations = validated_users[i].validations;
+        return validated_users[i].validations;
     }
-    return validations;
 }
 function change_validation_state( room_name, index, checked ) {
     const length = rooms[room_name].history.length;
@@ -354,14 +352,15 @@ function get_history_last_item_validated_users_list(room_name) {
     const users_array = get_history_last_item_validated_users_array(room_name);
     const users_list = [];
     users_array.forEach(user => {
-        if(user.valided) {
-            users_list.push(user.name);
+        if(user.validated) {
+            users_list.push(user.username);
         }
     });
     return users_list;
 }
 function get_history_last_item_validation_data(room_name) {
     const data = [];
+    const validation_data = [];
     const answers_obj = get_history_last_item_answers_obj(room_name);
     const topics = get_history_last_item_chosen_topics(room_name);
     const validated_users = get_history_last_item_validated_users_list(room_name);
@@ -376,9 +375,13 @@ function get_history_last_item_validation_data(room_name) {
                     checked: validations[i]
                 });
             }
-            return data;
+            set_user_validation_state(room_name, user, true);
+            validation_data.push(user);
+            validation_data.push(data);
+            return validation_data;
         }
     }
+    return false;
 }
 function add_to_history( room_name, history ) {
     const length = rooms[room_name].history.push(history);
@@ -398,6 +401,20 @@ function set_validation_initial_state(room_name, username, answers) {
         validations: get_validations_initial_state(room_name, answers)
     });
 }
+function set_user_validation_state(room_name, username, state) {
+    const history = rooms[room_name].history[ rooms[room_name].history.length - 1];
+    
+    for (let i = 0; i < history.validated_users.length; i++) {
+        if(username == history.validated_users[i].username ) {
+            history.validated_users[i].validated = state;
+        }
+    }
+    history.validated_users.forEach(element => {
+        if(username == element.username ) {
+            element.validated = state;
+        }
+    });
+}
 function get_validations_initial_state(room_name, answers) {
     const length = rooms[room_name].history.length;
 
@@ -408,6 +425,9 @@ function get_validations_initial_state(room_name, answers) {
         validations.push( answer.toUpperCase()[0] == chosen_letter && answer.length > 1 );
     });
     return validations;
+}
+function set_game_state(room_name, state) {
+    rooms[room_name].game_state = state;
 }
 //
 
@@ -458,6 +478,7 @@ module.exports = {
     get_history_last_item_validated_users_list,
     get_history_last_item_validation_data,
     add_to_history,
-    add_user_answers_to_history
+    add_user_answers_to_history,
+    set_game_state
     //#endregion
 }
