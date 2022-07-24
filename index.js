@@ -137,7 +137,8 @@ function handle_room_creation(socket, user_obj, callback) {
         name: username,
         user_id,
         is_host: true,
-        is_connected: true
+        is_connected: true,
+        score: 0
     }
 
     const room_obj = rooms.create_room_with_user(room_name, user);
@@ -177,7 +178,8 @@ function handle_enter_room( socket, user_obj, callback ) {
             name: username,
             user_id,
             is_host: false,
-            is_connected: true
+            is_connected: true,
+            score: 0
         }
         rooms.add_user(room_name, user);
         socket.join(room_name);
@@ -419,6 +421,6 @@ function handle_match_summary(socket, callback) {
     const match_summary = rooms.get_match_summary(room_name);
     rooms.add_match_summary(room_name, match_summary);
     rooms.update_users_scores(room_name, match_summary);
-    io.to(room_name).emit('MATCH_SUMMARY', match_summary);
+    io.to(room_name).emit('MATCH_SUMMARY', rooms.get_room_by_name(room_name) );
 }
 // #endregion

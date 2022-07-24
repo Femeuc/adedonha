@@ -85,6 +85,10 @@ function update_left_bar(users) {
     const players_ul = document.querySelector('#left_sidebar ul');
     players_ul.innerHTML = '';
 
+    const users_sorted_by_score = users.sort( function(a, b) {
+        return b.score - a.score;
+    })
+
     for (let i = 0; i < users.length; i++) {
         if( !users[i].is_connected ) continue;
         players_ul.innerHTML += get_player_element(i, users);
@@ -169,6 +173,7 @@ function handle_users_who_havent_finished_answers() {
     const answers = [];
     answer_inputs.forEach(input => {
         answers.push( input.value.trim() );
+        input.value = '';
     });
     socket.emit('UNFINISHED_ANSWERS', answers);
 }
@@ -179,12 +184,15 @@ function handle_validation_change(index, checked) {
     checked ? inputs[index].parentNode.classList.add('input_checked') : inputs[index].parentNode.classList.remove('input_checked');
 }
 
-function handle_match_summary( match_summary ) {
+function handle_match_summary( room_obj ) {
     document.querySelector('#validation').style.display = 'none';
     document.querySelector('#match_summary').style.display = 'block';
+    update_left_bar(room_obj.users)
 
     const list = document.querySelector('#match_summary ul');
+    const match_summary = room_obj.history[ room_obj.history.length - 1 ].summary;
 
+    list.innerHTML = '';
     match_summary.forEach( el => {
         list.innerHTML += get_summary_item_html(el);
     });

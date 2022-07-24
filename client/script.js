@@ -3,6 +3,9 @@ let is_connected = false;
 let choosing_letter_interval;
 let choosing_topics_interval;
 
+
+screen.orientation.lock("landscape");
+
 socket.on('connect', () => {
     if(!is_connected) {
         is_connected = true;
@@ -129,7 +132,7 @@ function get_host( users ) {
 }
 
 function get_random_avatar_name() {
-    const max = 11;
+    const max = 13;
     const min = 0;
     const n = Math.floor(Math.random() * (max + 1)) + min;
     return `among_${ n }.PNG`;
@@ -190,6 +193,7 @@ function submit_answers() {
     const answers = [];
     answer_inputs.forEach(input => {
         answers.push( input.value.trim() );
+        input.value = '';
     });
     socket.emit('ANSWERS_SUBMIT', answers, (data, username) => {
         if(typeof(data) == 'string') {
@@ -229,6 +233,10 @@ function validate_next() {
             console.log(error);
         });
     });
+}
+function choose_new_match_preferences() {
+    document.querySelector('#match_summary').style.display = 'none';
+    document.querySelector('#preferences').style.display = 'flex';
 }
 
 /* #region Animations */
@@ -343,7 +351,7 @@ function get_player_element( i, users ) {
     html_string += `
         <img src="./images/${get_random_avatar_name()}" alt="">
         <div>
-          <div>0pts.</div>
+          <div>${users[i].score}_pts.</div>
          <span>${users[i].name}</span>
         </div>
     </div>`;

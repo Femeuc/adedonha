@@ -109,7 +109,7 @@ function create_room( name ) {
         checkboxes: {
             letters: { A: true, B: true, C: true, D: true, E: true, F: true, G: true, H: false, I: true, J: true, K: false, L: true, M: true, N: true, O: true, P: true, Q: false, R: true, S: true, T: true, U: true, V: true, X: false, W: false, Y: false, Z: false },
             default: { Animal: true, Fruta: true, Nome: true, FVL: true, CEP: true, Objeto: true },
-            custom:  { 'Time de futebol': true, 'Rima com ÃO': true, 'Rima com ADE': true, 'Rima com EZA': true, Cor: false }
+            custom:  { 'Time de futebol': true, 'Rima com ÃO': true, 'Rima com ADE': true, 'Rima com EZA': true, Cor: false, "Profissão": false, "Doeança": false, "Crime": false, "Tipo de morte": false, "Líquido": false, "No tático tem": false, "PCH": false }
         },
         history: []
     }
@@ -188,7 +188,8 @@ function add_user( room, user ) {
         name: user.name,
         user_id: user.user_id,
         is_host: !Boolean( get_room_host(room) ),
-        is_connected: user.is_connected
+        is_connected: user.is_connected,
+        score: user.score
     });
 }
 function get_user_by_socket_id_in_room( socket_id, room_name ) {
@@ -586,7 +587,7 @@ function update_users_scores(room_name, match_summary) {
                 item.answers.forEach( answr => {
                     score += answr.score;
                 });
-                user.score = score;
+                user.score += score;
             }
         });
     });
