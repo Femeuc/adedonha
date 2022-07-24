@@ -284,7 +284,7 @@ function handle_chat_message( socket, username, message, callback ) {
     callback(msg);
     console.log(msg);
 }
-function handle_start(socket, callback, delay = 3000) {
+function handle_start(socket, callback, delay = 4000) {
     const room_name = rooms.get_room_name_by_socket_id( socket.id );
     if(!room_name) {
         callback(`User must be in the room in order to start game`);
@@ -421,6 +421,7 @@ function handle_match_summary(socket, callback) {
     const match_summary = rooms.get_match_summary(room_name);
     rooms.add_match_summary(room_name, match_summary);
     rooms.update_users_scores(room_name, match_summary);
+    rooms.set_game_state(room_name, 3);
     io.to(room_name).emit('MATCH_SUMMARY', rooms.get_room_by_name(room_name) );
 }
 // #endregion

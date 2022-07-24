@@ -7,6 +7,7 @@ function update_room(room_obj) {
     if(room_obj.game_state == 0.5) { load_game_state_0_5(room_obj); }
     if(room_obj.game_state == 1) { load_game_state_1(room_obj); }
     if(room_obj.game_state == 2) { load_game_state_2(room_obj); }
+    if(room_obj.game_state == 3) {load_game_state_3(room_obj);}
     update_host(room_obj.users);
     update_left_bar(room_obj.users);
     //update_chat_bar(room_obj.users);
@@ -54,6 +55,11 @@ function load_game_state_2(room_obj) {
 
 
     display_user_to_be_validated_data(user_to_be_validated, data);
+}
+function load_game_state_3(room_obj) {
+    document.querySelector('#preferences').style.display = 'none';
+    document.querySelector('#match_summary').style.display = 'block'; 
+    handle_match_summary(room_obj);
 }
 
 function update_host(users) {
@@ -128,6 +134,7 @@ function update_chat_on_left_room( username, users ) {
     update_chat_bar(`${host.name} é o novo HOST`);
 }
 function handle_start(room_obj, delay) {
+    document.querySelector('#match_summary');
     document.querySelector('#preferences').style.display = 'none';
     document.querySelector('#answers').style.display = 'flex';
     start_choosing_letter_animation(room_obj.checkboxes);
@@ -153,7 +160,7 @@ function handle_chosen_topics(chosen_topics) {
     }
 }
 
-function display_user_to_be_validated_data( username, validation_data ) {
+function display_user_to_be_validated_data( username, validation_data, audio = false) {
     const topics = document.querySelectorAll('#validation .input-div>div');
     const inputs = document.querySelectorAll('#validation .input-div>input');
     const checkboxes = document.querySelectorAll('#validation .input-div span');
@@ -165,6 +172,7 @@ function display_user_to_be_validated_data( username, validation_data ) {
         inputs[i].readOnly = true;
         validation_data[i].checked ? checkboxes[i].classList.add('input_checked') : checkboxes[i].classList.remove('input_checked');
     }
+    if(audio) { play_audio('next'); }
     update_chat_bar(`Validando ${username}`);
 }
 

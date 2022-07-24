@@ -95,6 +95,7 @@ function create_room() {
         localStorage.setItem('room_name', room_name);
         console.log(`did succeed? ${did_succeed} -> ${message}`);
         handle_enter_room(room_obj);
+        play_audio('among_us_venting');
     });
 }
 
@@ -155,19 +156,46 @@ function toggle_checkbox( span ) {
     });
 }
 
+function deal_with_long_strings(value) {
+    let words = value.split(' ');
+    let new_words = [];
+    words.forEach( word => {
+        let w = '';
+        if(word.length > 10) {
+            for (let i = 0; i < word.length; i++) {
+                w += word[i];
+                if(i != 0) {
+                    if( i % 10 == 0 ) w += '- ';
+                }
+            }
+            new_words.push(w);
+        } else {
+            for (let i = 0; i < word.length; i++) {
+                w += word[i];
+            }
+            new_words.push(w);
+        }
+    });
+    return new_words.toString().replaceAll(',', ' ');
+}
+
 function add_custom_topic() {
     const div = document.querySelector('#custom');
     const input = document.querySelector('#custom_topic');
     if(input.value.length < 1 ) return;
+    
+    const value = deal_with_long_strings(input.value);
+    
+
     div.innerHTML += `
         <span class="checkbox_container" onclick="toggle_checkbox(this)">
             <span class="checkbox checked"> <input type="checkbox" checked> </span>
-            <span>${input.value}</span>
+            <span>${value}</span>
         </span>
     `;
 
     const checkbox = {
-        name: input.value, 
+        name: value, 
         checked: true, 
         type: 'custom'
     }
@@ -193,7 +221,6 @@ function submit_answers() {
     const answers = [];
     answer_inputs.forEach(input => {
         answers.push( input.value.trim() );
-        input.value = '';
     });
     socket.emit('ANSWERS_SUBMIT', answers, (data, username) => {
         if(typeof(data) == 'string') {
@@ -202,6 +229,9 @@ function submit_answers() {
         }
         document.querySelector('#answers').style.display = 'none';
         document.querySelector('#validation').style.display = 'flex';
+        answer_inputs.forEach(input => { input.value = '';});
+
+        among_us_emergency_animation();
         display_user_to_be_validated_data(username, data);
     });
 }
@@ -226,7 +256,7 @@ function validate_next() {
             return;
         }
         if(result) {
-            display_user_to_be_validated_data(result[0], result[1]);
+            display_user_to_be_validated_data(result[0], result[1], true);
             return;
         }
         socket.emit('MATCH_SUMMARY', error => {
@@ -275,6 +305,30 @@ function start_choosing_topics_animation(checkboxes) {
             field.innerText = both[random_int];
         });  
     }, 50);
+}
+function among_us_emergency_animation() {
+    play_audio('among_us_emergency');
+    const section = document.querySelector('#validation');
+    section.innerHTML += `
+        <img src="./images/among_us_emergency.gif" 
+            alt="Among us Emergency" style="
+            aspect-ratio: 16/9;
+            width: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);"
+        />
+    `;
+    setTimeout(function() {
+        section.removeChild(section.lastElementChild);
+    }, 800);
+}
+/* #endregion */
+
+/* #region Audio */
+function play_audio(file_name) {
+    const audio = new Audio(`./audio/${file_name}.mp3`);
+    audio.play();
 }
 /* #endregion */
 
@@ -376,7 +430,7 @@ function get_summary_item_html( item ) {
             <div class="player_info">`;
             item.answers.forEach(answer => {
                 html_string += `
-                    <div>${answer.topic}: <span style="font-weight:bold;">${answer.answer}</span> </div>
+                    <div>${answer.topic}: <span>${answer.answer}</span> </div>
                     <div> Pontos: ${answer.score}</div>  
                     <div> Motivo: "${answer.reason}"</div>
                 `;
