@@ -178,3 +178,14 @@ function handle_validation_change(index, checked) {
     inputs[index].checked = checked;
     checked ? inputs[index].parentNode.classList.add('input_checked') : inputs[index].parentNode.classList.remove('input_checked');
 }
+
+function handle_match_summary( match_summary ) {
+    document.querySelector('#validation').style.display = 'none';
+    document.querySelector('#match_summary').style.display = 'block';
+
+    const list = document.querySelector('#match_summary ul');
+
+    match_summary.forEach( el => {
+        list.innerHTML += get_summary_item_html(el);
+    });
+}

@@ -17,6 +17,7 @@ body {
     background: url("./images/website_background.png") no-repeat center center fixed;
     background-size: cover;
 }
+
 h2 {
     font-size: 35px;
     font-family: 'Titan One', cursive;
@@ -450,6 +451,33 @@ main h2 {
     color: var(--font-color);
     background-color: var(--Main-color);
     box-shadow: 0px 7px 0px 0px var(--Outline);
+}
+/* #endregion */
+
+/* #region summary section */
+#match_summary {
+    background: var(--Main-color);
+    height: 100%;
+    padding: 20px 40px;
+    font-size: 20px;
+    display: none;
+}
+#match_summary h2 {
+    font-size: 30px;
+    margin: 0px auto;
+}
+#match_summary li {
+    margin-top: 10px;
+}
+#match_summary .player_info {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 15px;
+    padding-left: 15px;
+    border-left: 1px solid black;
+    margin-left: 15px;
+    border-bottom: 1px solid black;
+    justify-items: end;
 }
 /* #endregion */
 

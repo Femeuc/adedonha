@@ -101,7 +101,7 @@ function get_server_state() {
         rooms: rooms.rooms,
     }
     console.log(state.rooms.a);
-    return state.rooms.a;
+    return state;
 }
 
 // #region General functions 
@@ -416,6 +416,9 @@ function handle_match_summary(socket, callback) {
     const host = rooms.get_room_host(room_name);
     if(host.id != socket.id) { callback(`only the host has permission`); return; }
 
-    io.to(room_name).emit('MATCH_SUMMARY');
+    const match_summary = rooms.get_match_summary(room_name);
+    rooms.add_match_summary(room_name, match_summary);
+    rooms.update_users_scores(room_name, match_summary);
+    io.to(room_name).emit('MATCH_SUMMARY', match_summary);
 }
 // #endregion

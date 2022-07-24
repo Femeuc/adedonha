@@ -51,6 +51,6 @@ socket.on('VALIDATE_NEXT', (username, validation_data) => {
     display_user_to_be_validated_data(username, validation_data);
 });
 
-socket.on('MATCH_SUMMARY', () => {
-    alert('MATCH_SUMMARY');
+socket.on('MATCH_SUMMARY', (match_summary) => {
+    handle_match_summary(match_summary);
 })

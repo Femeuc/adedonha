@@ -361,4 +361,21 @@ function get_checkbox_span_html(name, checkboxes) {
         <span>${name}</span>
     </span>`;
 }
+
+function get_summary_item_html( item ) {
+    let html_string = `
+        <li>${item.username}
+            <div class="player_info">`;
+            item.answers.forEach(answer => {
+                html_string += `
+                    <div>${answer.topic}: <span style="font-weight:bold;">${answer.answer}</span> </div>
+                    <div> Pontos: ${answer.score}</div>  
+                    <div> Motivo: "${answer.reason}"</div>
+                `;
+            });
+            html_string +=`
+            </div>
+        </li>`;
+    return html_string;
+}
 // #endregion 

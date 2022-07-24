@@ -1,41 +1,104 @@
 // VARIABLE
-const rooms = {
-    /* Structure
-    room1: {
-        users: [
-            {
-                id: '123',
-                name: 'femeuc',
-                user_id: 500,
-                is_host: true,
-                is_connected: true
-            }
-        ],
-        game_state: 0,
-        checkboxes: {
-            letters: {A: true, B: true, etc.},
-            default: {Animal: true, CEP: true, etc.},
-            custom: {jogo: false, rimas: true, etc...}
+structure_and_room_test = [
+    /*structure_____________: {
+         Structure
+room1: {
+    users: [
+        {
+            id: '123',
+            name: 'femeuc',
+            user_id: 500,
+            is_host: true,
+            is_connected: true
         }
-        history: [
-            {
-                chosen_letter: 'A',
-                chosen_topics: [],
-                answers: {
-                    user: [],
-                    user2: []
-                }, 
-                validated_users: [
-                    {
-                        validated: false,
-                        username,
-                        validations: get_validations_initial_state(room_name, answers)
-                    }
-                ]
-            }
-        ]
-    } */
-}
+    ],
+    game_state: 0,
+    checkboxes: {
+        letters: {A: true, B: true, etc.},
+        default: {Animal: true, CEP: true, etc.},
+        custom: {jogo: false, rimas: true, etc...}
+    }
+    history: [
+        {
+            chosen_letter: 'A',
+            chosen_topics: [],
+            answers: {
+                user: [],
+                user2: []
+            }, 
+            validated_users: [
+                {
+                    validated: false,
+                    username,
+                    validations: get_validations_initial_state(room_name, answers)
+                }
+            ]
+        }
+    ]
+} 
+},
+room_test_____________: {
+    users: [
+        {
+            id: '0',
+            name: 'femeuc',
+            user_id: 0,
+            is_host: true,
+            is_connected: true
+        },
+        {
+            id: '1',
+            name: 'cibitto',
+            user_id: 1,
+            is_host: false,
+            is_connected: true
+        },
+        {
+            id: '2',
+            name: 'brave',
+            user_id: 2,
+            is_host: false,
+            is_connected: true
+        },
+        {
+            id: '3',
+            name: 'fox',
+            user_id: 3,
+            is_host: false,
+            is_connected: false
+        },
+    ],
+    history: [
+        {
+            chosen_letter: 'A',
+            chosen_topics: ['topic1', 'topic2', 'topic3'],
+            answers: {
+                femeuc: ['answer1', 'answer2', 'answer3'],
+                cibitto: ['answ1', 'answ2', 'answe'],
+                brave: ['answer1', 'answer2', 'answer3']
+            }, 
+            validated_users: [
+                {
+                    validated: true,
+                    username: 'femeuc',
+                    validations: [true, true, true]
+                },
+                {
+                    validated: true,
+                    username: 'cibitto',
+                    validations: [true, true, true]
+                },
+                {
+                    validated: true,
+                    username: 'brave',
+                    validations: [true, true, true]
+                }
+            ]
+        }
+    ]
+}*/
+];
+const rooms = {}
 
 // #region Rooms functions
 function create_room( name ) {
@@ -431,6 +494,103 @@ function get_validations_initial_state(room_name, answers) {
 function set_game_state(room_name, state) {
     rooms[room_name].game_state = state;
 }
+function get_match_summary(room_name) {
+    const users = get_users_from_room(room_name);
+    const summary = [];
+    const array = [];
+
+    const topics = get_match_chosen_topics(room_name);
+    users.forEach(user => {
+        if(user.is_connected) {
+            const answers = get_user_answers(room_name, user.name);
+            const validations = get_user_validations(room_name, user.name);
+            array.push({
+                username: user.name,
+                answers,
+                validations
+            });
+        }
+    });
+
+    // summary generation
+    for (let i = 0; i < array.length; i++) {
+        let user_info = {};
+        let answers_info = [];
+        for (let j = 0; j < array[i].answers.length; j++) {
+            let score = 0;
+            let reason = '';
+            let decrements = 0;
+            const answer = array[i].answers[j];
+
+            let answer_info = {};
+
+            if( array[i].validations[j] ) {
+                score = 10;
+                reason = 'resposta única';
+
+                for (let k = 0; k < array.length; k++) {
+                    if( k == i ) continue;
+
+                    if( array[k].answers[j].toLowerCase() == answer.toLowerCase() ) {
+                        decrements++;
+                        reason = `respostas repetidas: ${decrements}`;
+                    }
+                }
+            } else {
+                score = 0;
+                reason = 'resposta anulada';
+            }
+
+            answer_info.topic = topics[j],
+            answer_info.answer = answer;
+            answer_info.score = score - decrements;
+            answer_info.reason = reason;
+            answer_info.decrements = decrements;
+
+            answers_info.push(answer_info);
+        }
+
+        user_info.username = array[i].username;
+        user_info.answers = answers_info;
+        summary.push(user_info);
+    }
+    return summary;
+}
+function add_match_summary(room_name, match_summary) {
+    const history = rooms[room_name].history[ rooms[room_name].history.length - 1 ];
+    history.summary = match_summary;
+}
+function get_user_answers(room_name, username) {
+    const history = rooms[room_name].history[ rooms[room_name].history.length - 1 ];
+    return history.answers[username];
+}
+function get_user_validations(room_name, username) {
+    const history = rooms[room_name].history[ rooms[room_name].history.length - 1 ];
+    for (let i = 0; i < history.validated_users.length; i++) {
+        if(history.validated_users[i].username == username) {
+            return history.validated_users[i].validations;
+        }
+    }
+}
+function get_match_chosen_topics(room_name) {
+    const history = rooms[room_name].history[ rooms[room_name].history.length - 1 ];
+    return history.chosen_topics;
+}
+function update_users_scores(room_name, match_summary) {
+    const users = get_users_from_room(room_name);
+    
+    users.forEach( user => {
+        match_summary.forEach( item => {
+            if(item.username == user.name) {
+                let score = 0;
+                item.answers.forEach( answr => {
+                    score += answr.score;
+                });
+                user.score = score;
+            }
+        });
+    });
+}
 //
 
 module.exports = { 
@@ -483,6 +643,9 @@ module.exports = {
     add_user_answers_to_history,
     set_user_validation_state,
     get_current_username_being_validated,
-    set_game_state
+    set_game_state,
+    get_match_summary,
+    add_match_summary,
+    update_users_scores
     //#endregion
 }
