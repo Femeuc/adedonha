@@ -271,6 +271,15 @@ function choose_new_match_preferences() {
     document.querySelector('#preferences').style.display = 'flex';
 }
 
+function toggle_li_summary_display(li) {
+    const block = li.lastElementChild;
+    if(block.style.display == 'none') {
+        block.style.display = 'grid';
+        return;
+    }
+    block.style.display = 'none';
+}
+
 /* #region Animations */
 function start_choosing_letter_animation(checkboxes) {
     const letter_span = document.querySelector('#answers .chosen_letter');
@@ -439,8 +448,25 @@ function get_checkbox_span_html(name, checkboxes) {
 
 function get_summary_item_html( item ) {
     let html_string = `
-        <li>${item.username}
-            <div class="player_info">`;
+        <li onclick="toggle_li_summary_display(this)">
+            <span style="
+                    position: absolute;
+                    right: 10px;
+                    top: 0;
+                    font-size: 22px;
+                    font-weight: bold;
+                   ">
+                +
+            </span>
+            <div style="
+                    background: #36935b;
+                    padding: 5px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                  ">
+                ${item.username}
+            </div>
+            <div class="player_info" style="display: none">`;
             item.answers.forEach(answer => {
                 html_string += `
                     <div>${answer.topic}: <span>${answer.answer}</span> </div>

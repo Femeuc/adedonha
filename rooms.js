@@ -252,6 +252,9 @@ function get_users_from_room( room ) {
     return rooms[room].users;
 }
 function get_room_host( room ) {
+    if(!get_room_by_name(room)) {// room does not exist, prevent bugs
+        return false;
+    }
     const users = get_users_from_room( room );
     for (let i = 0; i < users.length; i++) {
         if(users[i].is_host) {

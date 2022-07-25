@@ -65,7 +65,9 @@ function load_game_state_3(room_obj) {
 function update_host(users) {
     const host = get_host(users);
     if( localStorage.getItem('user_id') != host.user_id ) {
-        document.querySelector('#preferences').style.pointerEvents = 'none';
+        document.querySelectorAll('#preferences div').forEach( div => {
+            div.style.pointerEvents = 'none';
+        });
         document.querySelector('#validation').style.pointerEvents = 'none';
         users.forEach(user => {
             if(!user.is_connected) return;
@@ -84,7 +86,9 @@ function update_host(users) {
     host_only.forEach( e => {
         e.classList.remove("host_only");
     });
-    document.querySelector('#preferences').style.pointerEvents = 'auto';
+    document.querySelectorAll('#preferences div').forEach( div => {
+        div.style.pointerEvents = 'auto';
+    });
     document.querySelector('#validation').style.pointerEvents = 'auto';
 }
 function update_left_bar(users) {
@@ -139,7 +143,7 @@ function update_chat_on_left_room( username, users ) {
     update_chat_bar(`${host.name} é o novo HOST`);
 }
 function handle_start(room_obj, delay) {
-    document.querySelector('#match_summary');
+    document.querySelector('#match_summary').style.display = 'none';
     document.querySelector('#preferences').style.display = 'none';
     document.querySelector('#answers').style.display = 'flex';
     start_choosing_letter_animation(room_obj.checkboxes);

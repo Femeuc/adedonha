@@ -219,6 +219,9 @@ function handle_enter_room( socket, user_obj, callback ) {
 }
 function handle_checkbox_change( socket, checkbox, room_name, callback ) {
     const host = rooms.get_room_host(room_name);
+    if(!host) {
+        callback(`Não foi possível, tente de novo!`);
+    }
     if(host.id != socket.id) {
         callback(`checkbox_change FAIL: only the host has permission`);
         return;
