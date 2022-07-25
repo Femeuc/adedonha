@@ -273,7 +273,7 @@ main h2 {
 }
 #preferences h2 {
     text-align: left;
-    font-size: var(--size-4);
+    font-size: var(--size-3);
 }
 #preferences .checkbox_container, #preferences .checkbox_container * {
     cursor: pointer;
@@ -356,10 +356,11 @@ main h2 {
 }
 #answers #inputs_div {
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: 31% 31% 31%;
     height: 100%;
     column-gap: 20px;
-    align-items: center;
+    align-items: end;
+    padding-bottom: 15px;
 }
 #answers label > div {
     color: black;
@@ -402,7 +403,7 @@ main h2 {
 /* #region Validation state */
 #validation {
     background-color: var(--Main-color);
-    padding: 10px 30px;
+    padding: 10px 10px 10px 30px;
     display: none;
     flex-direction: column;
     box-shadow: 0px 0px 0px 3px black;
@@ -415,9 +416,10 @@ main h2 {
 #validation #inputs_div {
     height: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 33% 33% 33%;
     align-content: space-around;
     justify-items: center;
+    align-items: end;
 }
 #validation .input-div {
     display: grid;
@@ -436,9 +438,10 @@ main h2 {
     display: block;
     text-align: center;
     font-family: 'Titan One';
-    font-size: var(--font-size);
+    font-size: 14px;
     letter-spacing: 2px;
     color: black;
+    overflow: hidden;
 }
 #validation label span {
     height: var(--size-3);

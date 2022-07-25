@@ -27,7 +27,7 @@ server.listen( process.env.PORT || "0.0.0.0" || "localhost", () => {
 
 // Rooms library
 const rooms = require('./rooms');
-let answer_time;
+const answer_time = {};
 
 // #region Socket IO library
 io.on('connection', (socket) => {
@@ -345,7 +345,7 @@ function handle_start(socket, callback, delay = 4000, time = 60000) {
 
         rooms.set_game_state(room_name, 1);
         io.to(room_name).emit('CHOSEN_DATA', chosen_data);
-        answer_time = setTimeout(() => {
+        answer_time[room_name] = setTimeout(() => {
             io.to(room_name).emit('TIME_IS_UP',);
         }, time)
     }, delay);
@@ -368,8 +368,8 @@ function handle_answers_submit(socket, answers, callback) {
             return;
         }
     }
-    clearTimeout(answer_time);
-    answer_time = -1;
+    clearTimeout(answer_time[room_name]);
+    answer_time[room_name] = -1;
     rooms.add_user_answers_to_history(room_name, user.name, answers);
     const validation_data = rooms.get_history_last_item_validation_data(room_name);
     rooms.set_game_state(room_name, 2);
@@ -385,11 +385,11 @@ function handle_unfinished_answers(socket, answers) {
     if(!username) { console.log('precisa ter um nome'); return; }
 
     rooms.add_user_answers_to_history(room_name, username, answers);
-    if(answer_time != -1) {
+    if(answer_time[room_name] != -1) {
         const validation_data = rooms.get_history_last_item_validation_data(room_name);
         rooms.set_game_state(room_name, 2);
         io.to(room_name).emit('UNFINISHED_ANSWERS', validation_data[0], validation_data[1]);
-        answer_time = -1;
+        answer_time[room_name] = -1;
     }
 }
 

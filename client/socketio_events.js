@@ -46,6 +46,7 @@ socket.on('TIME_IS_UP', () => {
 
 socket.on('UNFINISHED_ANSWERS', (username, validation_data) => {
     clearInterval(answering_time_interval);
+    document.querySelector('#time_bar').style.width = "0%";
     update_chat_bar(`TEMPO ESGOTADO!!!`);
     document.querySelector('#answers').style.display = 'none';
     document.querySelector('#validation').style.display = 'flex';
@@ -59,6 +60,7 @@ socket.on('ANSWERS_SUBMIT', (username, validation_data) => {
     document.querySelector('#answers').style.display = 'none';
     document.querySelector('#validation').style.display = 'flex';
     among_us_emergency_animation();
+    document.querySelector("#time_bar").style.width = "0%";
     display_user_to_be_validated_data(username, validation_data);
 });
 

@@ -233,6 +233,7 @@ function submit_answers() {
         document.querySelector('#validation').style.display = 'flex';
         answer_inputs.forEach(input => { input.value = '';});
 
+        document.querySelector("#time_bar").style.width = "0%";
         among_us_emergency_animation();
         display_user_to_be_validated_data(username, data);
     });
@@ -340,8 +341,9 @@ function animate_time_bar(time = 0) {
     answering_time_interval = setInterval(() => {
         time_bar.style.width = `${width}%`;
         width += 1.7;
-        if(width > 99) {
+        if(width > 100) {
             clearInterval(answering_time_interval);
+            time_bar.style.width = "0%";
         }
     }, 1000);
 }
