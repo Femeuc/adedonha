@@ -40,6 +40,19 @@ socket.on('CHOSEN_DATA', chosen_data => {
     handle_chosen_data(chosen_data);
 });
 
+socket.on('TIME_IS_UP', () => {
+    handle_users_who_havent_finished_answers();
+});
+
+socket.on('UNFINISHED_ANSWERS', (username, validation_data) => {
+    clearInterval(answering_time_interval);
+    update_chat_bar(`TEMPO ESGOTADO!!!`);
+    document.querySelector('#answers').style.display = 'none';
+    document.querySelector('#validation').style.display = 'flex';
+    among_us_emergency_animation();
+    display_user_to_be_validated_data(username, validation_data);
+});
+
 socket.on('ANSWERS_SUBMIT', (username, validation_data) => {
     handle_users_who_havent_finished_answers();
     update_chat_bar(`<b>${username}</b> já terminou!`);

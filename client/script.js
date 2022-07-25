@@ -2,6 +2,7 @@ var socket = io();
 let is_connected = false;
 let choosing_letter_interval;
 let choosing_topics_interval;
+let answering_time_interval;
 
 
 screen.orientation.lock("landscape");
@@ -322,7 +323,18 @@ function among_us_emergency_animation() {
     `;
     setTimeout(function() {
         section.removeChild(section.lastElementChild);
-    }, 800);
+    }, 2000);
+}
+function animate_time_bar(time = 0) {
+    const time_bar = document.querySelector('#time_bar');
+    let width = 0;
+    answering_time_interval = setInterval(() => {
+        time_bar.style.width = `${width}%`;
+        width += 1.7;
+        if(width > 99) {
+            clearInterval(answering_time_interval);
+        }
+    }, 1000);
 }
 /* #endregion */
 
