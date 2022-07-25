@@ -116,7 +116,7 @@ function create_room( name ) {
             default: { 
                 Adjetivo: true, Alimento: true, 
                 Animal: true, CEP: true, 
-                'FVL (fruta, legume, verdura)': true,
+                'FVL': true,
                 'Nome de Pessoa': true,  Objeto: true,
                 'Profissão': true
             },
@@ -124,9 +124,9 @@ function create_room( name ) {
                 Abstrato: true, Cor: false, 
                 Carro: false, "Doeança ou Sintoma": true, 
                 "Disciplina": false, "Esporte": false,
-                "Famosos": true, "FSDA (filme, série, desenho, anime)": true,
+                "Famosos": true, "FSDA": true,
                 "Líquido": true, Marca: false, 
-                "Maior que 5m": false, "Menor que 1m": true,
+                "Maior que 5m": false, "Menor que 50cm": true,
                 "PCH": true, "Personagem": true,
                 'Rima com ÃO': true, 'Rima com ADE': true, 
                 'Rima com EZA': true, "Tem no supermercado": true, 
