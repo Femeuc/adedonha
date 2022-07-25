@@ -58,7 +58,7 @@ document.querySelector("#send_message").addEventListener("keydown", function(eve
     if (event.key === "Enter") {
         const message = event.target.value.trim();
         const username = localStorage.getItem('username');
-        update_chat_message(`<li><span class="sender">${username}</span>: ${message}</li>`);
+        update_chat_message(`<span class="sender">${username}</span>: ${message}`);
         console.log(`MESSAGE SENT: ${message}`);
         socket.emit('CHAT_MESSAGE', username, message, msg => {
             console.log(msg);
@@ -119,6 +119,7 @@ function enter_room() {
         }
         localStorage.setItem('username', username);
         localStorage.setItem('room_name', room_name);
+        play_audio('among_us_venting');
         handle_enter_room(room_obj);
         console.log(`did succeed? ${did_succeed} -> ${message}`);
     });

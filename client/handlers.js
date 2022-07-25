@@ -107,7 +107,12 @@ function update_chat_bar(message) {
 }
 function update_chat_message(message_li) {
     const ul = document.querySelector('ul#chat');
-    ul.innerHTML += message_li;
+
+    const li = document.createElement('LI');
+    li.className = 'chat_message';
+    li.innerHTML = message_li;
+
+    ul.appendChild(li);
     ul.scrollTo(0,ul.scrollHeight);
 }
 function update_checkboxes(checkboxes) {

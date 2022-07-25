@@ -98,11 +98,27 @@ h2 {
 }
 /* #endregion */
 
-/* reconnection animation */
+/* #region reconnection animation */
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }  
+@keyframes append-animate {
+	from {
+		transform: translateX(100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0%);
+		opacity: 1;
+	}
+}
+
+.chat_message {
+	transform-origin: 50% 0;
+	animation: append-animate 1s linear;
+}
+/* #endregion */
 
 /* Page Container */
 #main_page {
@@ -253,6 +269,7 @@ main h2 {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    overflow: auto;
 }
 #preferences h2 {
     text-align: left;
@@ -356,6 +373,15 @@ main h2 {
     width: 100%;
     padding: var(--padding-1);
     background-color: var(--Bright-bg);
+}
+#answers #time {
+    width: 100%;
+    background-color: #378f5a;
+}
+#answers #time_bar {
+    width: 30%;
+    height: 15px;
+    background-color: #0e593e;
 }
 #answers button {
     width: fit-content;

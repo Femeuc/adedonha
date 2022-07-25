@@ -337,7 +337,7 @@ function get_message_li( username, message, room_name, callback ) {
         callback(false, `chat_message FAIL: User ${username} not found`);
         return;
     }
-    return `<li> <span class="sender">${username}</span>: ${message}</li>`;
+    return `<span class="sender">${username}</span>: ${message}`;
 }
 // #endregion
 
