@@ -107,9 +107,32 @@ function create_room( name ) {
         users: [],
         game_state: 0,
         checkboxes: {
-            letters: { A: true, B: true, C: true, D: true, E: true, F: true, G: true, H: false, I: true, J: true, K: false, L: true, M: true, N: true, O: true, P: true, Q: false, R: true, S: true, T: true, U: true, V: true, X: false, W: false, Y: false, Z: false },
-            default: { Animal: true, Fruta: true, Nome: true, FVL: true, CEP: true, Objeto: true },
-            custom:  { 'Time de futebol': true, 'Rima com ÃO': true, 'Rima com ADE': true, 'Rima com EZA': true, Cor: false, "Profissão": false, "Doeança": false, "Crime": false, "Tipo de morte": false, "Líquido": false, "No tático tem": false, "PCH": false }
+            letters: { 
+                A: true, B: true, C: true, D: true, E: true, 
+                F: true, G: true, H: false, I: true, J: true, 
+                K: false, L: true, M: true, N: true, O: true, 
+                P: true, Q: false, R: true, S: true, T: true, 
+                U: true, V: true, X: false, W: false, Y: false, Z: false },
+            default: { 
+                Adjetivo: true, Alimento: true, 
+                Animal: true, CEP: true, 
+                'FVL (fruta, legume, verdura)': true,
+                'Nome de Pessoa': true,  Objeto: true,
+                'Profissão': true
+            },
+            custom:  { 
+                Abstrato: true, Cor: false, 
+                Carro: false, "Doeança ou Sintoma": true, 
+                "Disciplina": false, "Esporte": false,
+                "Famosos": true, "FSDA (filme, série, desenho, anime)": true,
+                "Líquido": true, Marca: false, 
+                "Maior que 5m": false, "Menor que 1m": true,
+                "PCH": true, "Personagem": true,
+                'Rima com ÃO': true, 'Rima com ADE': true, 
+                'Rima com EZA': true, "Tem no supermercado": true, 
+                "Tem na escola": true,'Time de futebol': false, 
+                Verbo: true 
+            }
         },
         history: []
     }
@@ -392,9 +415,16 @@ function choose_random_topics(room_name, callback) {
     }
 
     const chosen_topics = [];
-
     for (let i = 0; i < 9; i++) {    
+        const topic_repetition_permission_probability = 0.4; // percentage
+        const allow_repeat = Math.random() < topic_repetition_permission_probability;
         const random_int = Math.floor( Math.random() * both.length );
+        const random_topic = both[random_int];
+
+        if( chosen_topics.includes(random_topic) && !allow_repeat ) {
+            chosen_topics.push(both[ Math.floor( Math.random() * both.length ) ]);
+            continue;
+        }
         chosen_topics.push(both[random_int]);
     }
     
