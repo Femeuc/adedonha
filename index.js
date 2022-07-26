@@ -288,7 +288,7 @@ function handle_chat_message( socket, username, message, callback ) {
     callback(msg);
     console.log(msg);
 }
-function handle_start(socket, callback, delay = 4000, time = 60000) {
+function handle_start(socket, callback, delay = 4000, time = 80000) {
     const room_name = rooms.get_room_name_by_socket_id( socket.id );
     if(!room_name) {
         callback(`User must be in the room in order to start game`);
@@ -341,13 +341,13 @@ function handle_start(socket, callback, delay = 4000, time = 60000) {
                 return;
             }
             console.log(`chosen letter ${chosen_letter} set to false`);
-        });
 
-        rooms.set_game_state(room_name, 1);
-        io.to(room_name).emit('CHOSEN_DATA', chosen_data);
-        answer_time[room_name] = setTimeout(() => {
-            io.to(room_name).emit('TIME_IS_UP',);
-        }, time)
+            rooms.set_game_state(room_name, 1);
+            io.to(room_name).emit('CHOSEN_DATA', chosen_data);
+            answer_time[room_name] = setTimeout(() => {
+                io.to(room_name).emit('TIME_IS_UP',);
+            }, time)
+        });
     }, delay);
 }
 function handle_answers_submit(socket, answers, callback) {

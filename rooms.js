@@ -128,7 +128,7 @@ function create_room( name ) {
                 "Líquido": true, Marca: false, 
                 "Maior que 5m": false, "Menor que 50cm": true,
                 "PCH": true, "Personagem": true,
-                'Rima com ÃO': true, 'Rima com ADE': true, 
+                'Rima com ÃO': true, 'Rima com ADE': true, "Rima com ENTE": true,
                 'Rima com EZA': true, "Tem no supermercado": true, 
                 "Tem na escola": true,'Time de futebol': false, 
                 Verbo: true 
@@ -297,7 +297,10 @@ function reconnect_user( user_obj, callback ) {
 
 // #region checkboxes functions
 function get_room_checkboxes( room_name ) {
-    return rooms[room_name].checkboxes; 
+    const room = rooms[room_name];
+    if(room) {
+        return room.checkboxes;
+    }
 }
 function change_checkbox( checkbox, room_name, callback ) {
     const type = checkbox.type;
@@ -314,6 +317,11 @@ function change_checkbox( checkbox, room_name, callback ) {
     }
 
     const checkboxes = get_room_checkboxes(room_name);
+    if(!checkboxes) {
+        callback(false, `Não foi possível obter as checkboxes da sala. Certifique-se de estar conectado a uma sala.`);
+        return;
+    }
+
     checkboxes[type][name] = checked;
     callback(true, `CHECKBOX_CHANGE: "${name}" is ${checked} in room ${room_name}`);
 }
@@ -419,7 +427,7 @@ function choose_random_topics(room_name, callback) {
 
     const chosen_topics = [];
     for (let i = 0; i < 9; i++) {    
-        const topic_repetition_permission_probability = 0.4; // percentage
+        const topic_repetition_permission_probability = 0; // percentage
         const allow_repeat = Math.random() < topic_repetition_permission_probability;
         const random_int = Math.floor( Math.random() * both.length );
         const random_topic = both[random_int];
@@ -550,6 +558,7 @@ function get_match_summary(room_name) {
     for (let i = 0; i < array.length; i++) {
         let user_info = {};
         let answers_info = [];
+        let total_score = 0;
         for (let j = 0; j < array[i].answers.length; j++) {
             let score = 0;
             let reason = '';
@@ -566,7 +575,7 @@ function get_match_summary(room_name) {
                     if( k == i ) continue;
 
                     if( array[k].answers[j].toLowerCase() == answer.toLowerCase() ) {
-                        decrements++;
+                        if( decrements < 10 ) { decrements++; }
                         reason = `respostas repetidas: ${decrements}`;
                     }
                 }
@@ -580,11 +589,13 @@ function get_match_summary(room_name) {
             answer_info.score = score - decrements;
             answer_info.reason = reason;
             answer_info.decrements = decrements;
+            total_score += answer_info.score;
 
             answers_info.push(answer_info);
         }
 
         user_info.username = array[i].username;
+        user_info.total_score = total_score;
         user_info.answers = answers_info;
         summary.push(user_info);
     }

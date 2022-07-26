@@ -233,7 +233,8 @@ function submit_answers() {
         document.querySelector('#validation').style.display = 'flex';
         answer_inputs.forEach(input => { input.value = '';});
 
-        document.querySelector("#time_bar").style.width = "0%";
+        clearInterval(answering_time_interval);
+        document.querySelector('#time_bar').style.width = "0%";
         among_us_emergency_animation();
         display_user_to_be_validated_data(username, data);
     });
@@ -340,7 +341,7 @@ function animate_time_bar(time = 0) {
     let width = 0;
     answering_time_interval = setInterval(() => {
         time_bar.style.width = `${width}%`;
-        width += 1.7;
+        width += 1.25;
         if(width > 100) {
             clearInterval(answering_time_interval);
             time_bar.style.width = "0%";
@@ -465,8 +466,9 @@ function get_summary_item_html( item ) {
                     padding: 5px;
                     border-radius: 5px;
                     cursor: pointer;
+                    word-spacing: 5px;
                   ">
-                ${item.username}
+                ${item.username} (${item.total_score}pts.)
             </div>
             <div class="player_info" style="display: none">`;
             item.answers.forEach(answer => {

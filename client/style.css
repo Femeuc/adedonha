@@ -17,6 +17,8 @@ body {
     background: url("./images/website_background.png") no-repeat center center fixed;
     background-size: cover;
 }
+button { cursor: pointer; }
+button:hover { opacity: 0.7; }
 
 h2 {
     font-size: 35px;
@@ -116,7 +118,7 @@ h2 {
 
 .chat_message {
 	transform-origin: 50% 0;
-	animation: append-animate 1s linear;
+	animation: append-animate .2s linear;
 }
 /* #endregion */
 
@@ -366,7 +368,7 @@ main h2 {
     color: black;
     text-align: center;
     font-family: 'Titan One', cursive;
-    font-size: var(--px-size-2);
+    font-size: 16px;
     letter-spacing: 2px;
 }
 #answers input {

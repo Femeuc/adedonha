@@ -60,7 +60,8 @@ socket.on('ANSWERS_SUBMIT', (username, validation_data) => {
     document.querySelector('#answers').style.display = 'none';
     document.querySelector('#validation').style.display = 'flex';
     among_us_emergency_animation();
-    document.querySelector("#time_bar").style.width = "0%";
+    clearInterval(answering_time_interval);
+    document.querySelector('#time_bar').style.width = "0%";
     display_user_to_be_validated_data(username, validation_data);
 });
 
