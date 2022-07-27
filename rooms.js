@@ -549,8 +549,10 @@ function get_match_summary(room_name) {
     const topics = get_match_chosen_topics(room_name);
     users.forEach(user => {
         if(user.is_connected) {
-            const answers = get_user_answers(room_name, user.name);
-            const validations = get_user_validations(room_name, user.name);
+            let answers = get_user_answers(room_name, user.name);
+            let validations = get_user_validations(room_name, user.name);
+            if(!answers) { answers = ['', '', '', '', '', '', '', '', '']; }
+            if(!validations) { validations = [false, false, false, false, false, false, false, false, false]}
             array.push({
                 username: user.name,
                 answers,
