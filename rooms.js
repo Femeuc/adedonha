@@ -284,6 +284,11 @@ function disconnect_user( id ) {
 function reconnect_user( user_obj, callback ) {
     const user = get_user_by_user_id( user_obj.user_id );
 
+    if(!user) {
+        callback(false, `username not available`);
+        return;
+    }
+
     if(user.name != user_obj.name) {
         callback( false, `user ${user_obj.name} must use the same name in order to reconnect`);
         return;
