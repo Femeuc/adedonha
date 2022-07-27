@@ -146,6 +146,7 @@ function handle_start(room_obj, delay) {
     document.querySelector('#match_summary').style.display = 'none';
     document.querySelector('#preferences').style.display = 'none';
     document.querySelector('#answers').style.display = 'flex';
+    document.querySelector("#answers").style.pointerEvents = 'none';
     start_choosing_letter_animation(room_obj.checkboxes);
     start_choosing_topics_animation(room_obj.checkboxes);
 }
@@ -153,6 +154,7 @@ function handle_chosen_data(chosen_data) {
     clearInterval(choosing_letter_interval);
     clearInterval(choosing_topics_interval);
 
+    document.querySelector("#answers").style.pointerEvents = 'auto';
     document.querySelector('#answers .chosen_letter').innerText = chosen_data.chosen_letter;
     handle_chosen_topics(chosen_data.chosen_topics);
 
