@@ -117,6 +117,7 @@ function handle_disconnection(socket) {
     rooms.disconnect_user( socket.id );
     io.to(room_name).emit('LEFT_ROOM', user, rooms.get_room_by_name(room_name));
     socket.leave(room_name);
+    clearTimeout(answer_time[room_name]);
     console.log(`Disconnected ${socket.id} from room ${room_name}`);
 }
 function handle_room_creation(socket, user_obj, callback) {
