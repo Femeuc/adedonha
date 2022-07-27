@@ -126,12 +126,12 @@ function create_room( name ) {
                 "Disciplina": false, "Esporte": false,
                 "Famosos": true, "FSDA": true,
                 "Líquido": true, Marca: false, 
-                "Maior que 5m": false, "Menor que 50cm": true,
+                "Objeto > 5m": false, "Objeto < 50cm": true,
                 "PCH": true, "Personagem": true,
                 'Rima com ÃO': true, 'Rima com ADE': true, "Rima com ENTE": true,
                 'Rima com EZA': true, "Tem no supermercado": true, 
                 "Tem na escola": true,'Time de futebol': false, 
-                Verbo: true 
+                "Transporte": true, Verbo: true 
             }
         },
         history: []
