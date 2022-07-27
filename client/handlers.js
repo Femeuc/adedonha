@@ -156,9 +156,9 @@ function handle_chosen_data(chosen_data) {
     document.querySelector('#answers .chosen_letter').innerText = chosen_data.chosen_letter;
     handle_chosen_topics(chosen_data.chosen_topics);
 
-    const bot_message = `Letra " ${chosen_data.chosen_letter} " `;
+    const bot_message = `Letra ${chosen_data.chosen_letter} `;
     update_chat_bar(bot_message);
-    update_chat_bar(`(${chosen_data.chosen_topics.join(') (')})`);
+    update_chat_bar(`${chosen_data.chosen_topics.join(' | ')}`);
     animate_time_bar();
 }
 
