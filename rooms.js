@@ -114,7 +114,7 @@ function create_room( name ) {
                 P: true, Q: false, R: true, S: true, T: true, 
                 U: true, V: true, X: false, W: false, Y: false, Z: false },
             default: { 
-                Adjetivo: true, Alimento: true, 
+                "Minha sogra é": true, Alimento: true, 
                 Animal: true, CEP: true, 
                 'FVL': true,
                 'Nome de Pessoa': true,  Objeto: true,
@@ -128,8 +128,8 @@ function create_room( name ) {
                 "Líquido": true, Marca: false, 
                 "Objeto > 5m": false, "Objeto < 50cm": true,
                 "PCH": true, "Personagem": true,
-                'Rima com ÃO': true, 'Rima com ADE': true, "Rima com ENTE": true,
-                'Rima com EZA': true, "Tem no supermercado": true, 
+                'Rima com ÃO': false, 'Rima com ADE': true, "Rima com ENTE": true,
+                'Rima com EZA': false, "Tem no supermercado": true, 
                 "Tem na escola": true,'Time de futebol': false, 
                 "Transporte": true, Verbo: true 
             }

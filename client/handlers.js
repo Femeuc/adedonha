@@ -210,10 +210,10 @@ function handle_match_summary( room_obj ) {
     update_left_bar(room_obj.users)
 
     const list = document.querySelector('#match_summary ul');
-    const match_summary = room_obj.history[ room_obj.history.length - 1 ].summary;
-
+    const summary = room_obj.history[ room_obj.history.length - 1 ].summary;
+    summary.sort(function(a, b){return b.total_score - a.total_score});
     list.innerHTML = '';
-    match_summary.forEach( el => {
+    summary.forEach( el => {
         list.innerHTML += get_summary_item_html(el);
     });
 }
