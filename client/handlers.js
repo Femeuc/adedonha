@@ -68,7 +68,7 @@ function update_host(users) {
         /*document.querySelectorAll('#preferences div').forEach( div => {
             div.style.pointerEvents = 'none'; //TODO: erase comment
         });*/
-        document.querySelectorAll('#preferences').style.display = 'none';
+        document.querySelector('#preferences').style.pointerEvents = 'none';
         document.querySelector('#validation').style.pointerEvents = 'none';
         document.querySelector('#left_sidebar').style.pointerEvents = 'none';
         users.forEach(user => {
@@ -88,10 +88,10 @@ function update_host(users) {
     host_only.forEach( e => {
         e.classList.remove("host_only");
     });
-    document.querySelectorAll('#preferences div').forEach( div => {
+    /*document.querySelectorAll('#preferences div').forEach( div => {
         div.style.pointerEvents = 'auto';
-    });
-    document.querySelector('#preferences').style.display = 'auto';
+    });*/
+    document.querySelector('#preferences').style.pointerEvents = 'auto';
     document.querySelector('#validation').style.pointerEvents = 'auto';
     document.querySelector('#left_sidebar').style.pointerEvents = 'auto';
 }
