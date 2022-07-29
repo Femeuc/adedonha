@@ -208,6 +208,12 @@ function handle_enter_room( socket, user_obj, callback ) {
         is_connected: true
     }
 
+    const player = rooms.get_user_by_user_id_in_room(user_id, room_name);
+    if(player.was_banned) {
+        callback(false, `Você foi banido dessa sala`);
+        return;
+    }
+
     // reconnects user
     rooms.reconnect_user( user, (did_succeed, msg) => {
         if( !did_succeed ) {

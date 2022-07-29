@@ -65,9 +65,10 @@ function load_game_state_3(room_obj) {
 function update_host(users) {
     const host = get_host(users);
     if( localStorage.getItem('user_id') != host.user_id ) {
-        document.querySelectorAll('#preferences div').forEach( div => {
-            div.style.pointerEvents = 'none'; //FIXME:
-        });
+        /*document.querySelectorAll('#preferences div').forEach( div => {
+            div.style.pointerEvents = 'none'; //TODO: erase comment
+        });*/
+        document.querySelectorAll('#preferences').style.display = 'none';
         document.querySelector('#validation').style.pointerEvents = 'none';
         document.querySelector('#left_sidebar').style.pointerEvents = 'none';
         users.forEach(user => {
@@ -90,6 +91,7 @@ function update_host(users) {
     document.querySelectorAll('#preferences div').forEach( div => {
         div.style.pointerEvents = 'auto';
     });
+    document.querySelector('#preferences').style.display = 'auto';
     document.querySelector('#validation').style.pointerEvents = 'auto';
     document.querySelector('#left_sidebar').style.pointerEvents = 'auto';
 }

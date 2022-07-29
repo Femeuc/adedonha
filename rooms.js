@@ -291,17 +291,13 @@ function ban_user(room_name, username) {
     user.was_banned = true;
 }
 function reconnect_user( user_obj, callback ) {
-    const user = get_user_by_user_id( user_obj.user_id ); // TODO: uma pessoa banida conseguiria entrar em outra sala?
-    if(user.was_banned) {
-        callback(false, `Você foi banido dessa sala`);
-        return;
-    }
+    const user = get_user_by_user_id( user_obj.user_id ); 
     if(!user) {
         callback(false, `Nome de usuário indisponível`);
         return;
     }
-    if(user.name != user_obj.name) { // TODO:
-        callback( false, `Usuário ${user_obj.name} deve usar o nome antigo para poder se reconectar`);
+    if(user.name != user_obj.name) {
+        callback( false, `Utilize o nome antigo "${user.name}" para poder se reconectar`);
         return;
     }
 
