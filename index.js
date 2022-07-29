@@ -304,7 +304,7 @@ function handle_chat_message( socket, username, message, callback ) {
     callback(msg);
     console.log(msg);
 }
-function handle_start(socket, callback, delay = 4000, time = 10000) {
+function handle_start(socket, callback, delay = 4000, time = 80000) {
     const room_name = rooms.get_room_name_by_socket_id( socket.id );
     if(!room_name) {
         callback(`User must be in the room in order to start game`);
