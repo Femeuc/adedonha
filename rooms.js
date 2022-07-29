@@ -212,7 +212,8 @@ function add_user( room, user ) {
         user_id: user.user_id,
         is_host: !Boolean( get_room_host(room) ),
         is_connected: user.is_connected,
-        score: user.score
+        score: user.score,
+        was_banned: user.was_banned
     });
 }
 function get_user_by_socket_id_in_room( socket_id, room_name ) {
@@ -281,16 +282,26 @@ function disconnect_user( id ) {
         destroy_room( room_name );
     }    
 }
-function reconnect_user( user_obj, callback ) {
-    const user = get_user_by_user_id( user_obj.user_id );
-
+function ban_user(room_name, username) {
+    const user = get_user_by_username_in_room(username, room_name);
     if(!user) {
-        callback(false, `username not available`);
+        console.log(`user not found`);
         return;
     }
-
-    if(user.name != user_obj.name) {
-        callback( false, `user ${user_obj.name} must use the same name in order to reconnect`);
+    user.was_banned = true;
+}
+function reconnect_user( user_obj, callback ) {
+    const user = get_user_by_user_id( user_obj.user_id ); // TODO: uma pessoa banida conseguiria entrar em outra sala?
+    if(user.was_banned) {
+        callback(false, `Você foi banido dessa sala`);
+        return;
+    }
+    if(!user) {
+        callback(false, `Nome de usuário indisponível`);
+        return;
+    }
+    if(user.name != user_obj.name) { // TODO:
+        callback( false, `Usuário ${user_obj.name} deve usar o nome antigo para poder se reconectar`);
         return;
     }
 
@@ -666,11 +677,13 @@ module.exports = {
     add_user,
     get_user_by_socket_id_in_room,
     get_user_by_user_id_in_room,
+    get_user_by_username_in_room,
     get_user_by_id,
     get_users_from_room,
     get_room_host,
     disconnect_user,
     reconnect_user,
+    ban_user,
     // #endregion
 
     // #region Checkboxes functions

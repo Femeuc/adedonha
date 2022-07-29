@@ -4,9 +4,6 @@ let choosing_letter_interval;
 let choosing_topics_interval;
 let answering_time_interval;
 
-
-screen.orientation.lock("landscape");
-
 socket.on('connect', () => {
     if(!is_connected) {
         is_connected = true;
@@ -282,6 +279,48 @@ function toggle_li_summary_display(li) {
     block.style.display = 'none';
 }
 
+function on_player_clicked(player_name) {
+    if( localStorage.getItem('username') == player_name ) {
+        console.log('Host clicando em si mesmo');
+        return;
+    }
+    const div = document.createElement('DIV');
+    div.innerHTML = `
+        <button onclick="kick_player_out('${player_name}')">
+            Expulsar ${player_name}
+        </button>
+        <button onclick="give_host_to('${player_name}')">
+            Dar host a ${player_name}
+        </button>
+        <button onclick="remove_player_click_div()">
+            Cancelar
+        </button>
+    `;
+    div.id = 'player_click';
+    document.body.appendChild(div);
+}
+function remove_player_click_div() {
+    document.body.removeChild(document.querySelector('#player_click'));
+}
+function kick_player_out(player_name) {
+    socket.emit('KICK_PLAYER_OUT', player_name, msg => {
+
+    });
+    
+    const players_spans = document.querySelectorAll('.player>div>span');
+    players_spans.forEach(element => {
+        if(element.innerText == player_name) {
+            const players = document.querySelector('#left_sidebar ul');
+            const player = element.parentElement.parentElement;
+            players.removeChild(player);
+        }
+    });
+    remove_player_click_div();
+}
+function give_host_to(player_name) {
+    console.log(`Giving host to ${player_name}...`);
+}
+
 /* #region Animations */
 function start_choosing_letter_animation(checkboxes) {
     const letter_span = document.querySelector('#answers .chosen_letter');
@@ -410,7 +449,7 @@ function hide_reconnection_UI() {
 
 function get_player_element( i, users ) {
     const user_id = localStorage.getItem('user_id');
-    let html_string = '<div class="player" style="';
+    let html_string = `<div class="player" onclick="on_player_clicked(this.querySelector('span').innerText)" style="cursor:pointer;`;
     if( user_id == users[i].user_id ) {
         html_string += `box-shadow: 0px 0px 5px 5px #0e593e;`;
     } 

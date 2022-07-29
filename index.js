@@ -85,6 +85,10 @@ io.on('connection', (socket) => {
         handle_match_summary(socket, callback);
     })
 
+    socket.on('KICK_PLAYER_OUT', (player_name, callback) => {
+        handle_kick_player_out(socket, player_name, callback);
+    });
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -117,7 +121,7 @@ function handle_disconnection(socket) {
     rooms.disconnect_user( socket.id );
     io.to(room_name).emit('LEFT_ROOM', user, rooms.get_room_by_name(room_name));
     socket.leave(room_name);
-    clearTimeout(answer_time[room_name]);
+    clearTimeout(answer_time[room_name]); //FIXME:
     console.log(`Disconnected ${socket.id} from room ${room_name}`);
 }
 function handle_room_creation(socket, user_obj, callback) {
@@ -140,7 +144,8 @@ function handle_room_creation(socket, user_obj, callback) {
         user_id,
         is_host: true,
         is_connected: true,
-        score: 0
+        score: 0,
+        was_banned: false
     }
 
     const room_obj = rooms.create_room_with_user(room_name, user);
@@ -181,7 +186,8 @@ function handle_enter_room( socket, user_obj, callback ) {
             user_id,
             is_host: false,
             is_connected: true,
-            score: 0
+            score: 0,
+            was_banned: false
         }
         rooms.add_user(room_name, user);
         socket.join(room_name);
@@ -273,6 +279,10 @@ function handle_new_checkbox( socket, checkbox, room_name, callback ) {
 }
 function handle_chat_message( socket, username, message, callback ) {
     const room_name = rooms.get_room_name_by_socket_id( socket.id );
+    if( !rooms.get_user_by_socket_id_in_room(socket.id, room_name).is_connected ) {
+        callback(`Você precisa entrar em uma sala para poder mandar mensagens`);
+        return;
+    }
     const message_li = rooms.get_message_li(
         username, 
         message, 
@@ -439,5 +449,18 @@ function handle_match_summary(socket, callback) {
     rooms.update_users_scores(room_name, match_summary);
     rooms.set_game_state(room_name, 3);
     io.to(room_name).emit('MATCH_SUMMARY', rooms.get_room_by_name(room_name) );
+}
+function handle_kick_player_out(socket, player_name, callback) {
+    const room_name = rooms.get_room_name_by_socket_id( socket.id );
+    if( !room_name ) { callback(`Você precisa estar em uma sala`) }
+
+    const player = rooms.get_user_by_username_in_room(player_name, room_name);
+    rooms.disconnect_user(player.id);
+    rooms.ban_user(room_name, player_name);
+    io.to(room_name).emit('LEFT_ROOM', player, rooms.get_room_by_name(room_name));
+    //socket.leave(room_name);
+    io.sockets.sockets.get(player.id).leave(room_name);
+    io.to(player.id).emit('PLAYER_BANNED');
+    console.log(`Disconnected ${player.id} from room ${room_name}`);
 }
 // #endregion

@@ -77,3 +77,8 @@ socket.on('MATCH_SUMMARY', (room_obj) => {
     play_audio('among_us_start');
     handle_match_summary(room_obj);
 })
+
+socket.on('PLAYER_BANNED', () => {
+    alert('Você foi expulso!');
+    window.location.reload();
+})
