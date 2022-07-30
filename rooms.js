@@ -542,7 +542,7 @@ function get_validations_initial_state(room_name, answers) {
     const validations = [];
 
     answers.forEach(answer => {
-        validations.push( answer.toUpperCase()[0] == chosen_letter && answer.length > 1 );
+        validations.push( answer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase()[0] == chosen_letter && answer.length > 1 );
     });
     return validations;
 }
