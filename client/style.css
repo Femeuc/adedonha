@@ -133,6 +133,7 @@ h2 {
     min-height: 500px;
     position: relative;
     max-height: 0px;
+    aspect-ratio: 16/9;
 }
 
 /* Header */
