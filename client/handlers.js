@@ -65,24 +65,21 @@ function load_game_state_3(room_obj) {
 function update_host(users) {
     const host = get_host(users);
     if( localStorage.getItem('user_id') != host.user_id ) {
-        /*document.querySelectorAll('#preferences div').forEach( div => {
-            div.style.pointerEvents = 'none'; //TODO: erase comment
-        });*/
         document.querySelector('#preferences').style.pointerEvents = 'none';
         document.querySelector('#validation').style.pointerEvents = 'none';
         document.querySelector('#left_sidebar').style.pointerEvents = 'none';
         users.forEach(user => {
             if(!user.is_connected) return;
             if(!user.is_host) {
-                update_chat_bar(`${user.name} está conectado`);
+                //update_chat_bar(`${user.name} está conectado`);
                 return;
             }
-            update_chat_bar(`${user.name} está conectado`);
+            //update_chat_bar(`${user.name} está conectado`);
             update_chat_bar(`${user.name} é o HOST`);
         });
         return;
     }
-    update_chat_bar(`${host.name} está conectado`);
+    //update_chat_bar(`${host.name} está conectado`);
     update_chat_bar(`${host.name} é o HOST`);
     const host_only = document.querySelectorAll('.host_only');
     host_only.forEach( e => {
