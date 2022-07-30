@@ -397,10 +397,6 @@ function animate_time_bar(time = 0) {
 /* #endregion */
 
 /* #region Audio */
-/*function play_audio(file_name) {
-    const audio = new Audio(`./audio/${file_name}.mp3`);
-    audio.play();
-}*/
 var play_audio = function() {
     var lastTime = new Date();
     return function(file_name) {
