@@ -129,7 +129,7 @@ h2 {
     grid-template-rows: 100%;
     width: 85%;
     margin: 10vh auto;
-    width: clamp(900px, 80%, 1200px);
+    width: clamp(900px, 80%, 1500px);
     min-height: 500px;
     position: relative;
     max-height: 0px;
@@ -293,10 +293,12 @@ main h2 {
     flex-direction: column;
     justify-content: space-evenly;
     overflow-y: auto;
+    row-gap: 15px;
 }
 #preferences h2 {
     text-align: left;
     font-size: var(--size-3);
+    margin: 15px auto;
 }
 #preferences .checkbox_container, #preferences .checkbox_container * {
     cursor: pointer;

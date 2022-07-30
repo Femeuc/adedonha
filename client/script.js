@@ -1,3 +1,10 @@
+// mobile device rotation
+window.addEventListener('orientationchange', function(event) {
+    if(screen.availHeight > screen.availWidth){
+        alert("Recomendo girar o aparelho para o modo landscape!");
+    }
+});
+
 var socket = io();
 let is_connected = false;
 let choosing_letter_interval;
