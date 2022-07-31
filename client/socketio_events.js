@@ -82,3 +82,16 @@ socket.on('PLAYER_BANNED', () => {
     alert('Você foi expulso!');
     window.location.reload();
 })
+
+socket.on('PLAYER_BAN', (player_name, room_obj) => {
+    play_audio(`among_us_kill`);
+    update_left_bar(room_obj.users);
+    update_chat_bar(`<b>${player_name}</b> foi expulso!`);
+})
+
+socket.on('GIVE_HOST', (new_host_name, room_obj) => {
+    console.log(`HOST CHANGE: ${new_host_name} is the new host`);
+    play_audio(`discord_notification`);
+    update_host(room_obj.users);
+    update_left_bar(room_obj.users);
+});

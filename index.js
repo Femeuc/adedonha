@@ -89,6 +89,10 @@ io.on('connection', (socket) => {
         handle_kick_player_out(socket, player_name, callback);
     });
 
+    socket.on('GIVE_HOST', (player_name, callback) => {
+        handle_give_host(socket, player_name, callback);
+    })
+
     socket.on("disconnecting", () => {
         handle_disconnection( socket );
     });
@@ -209,6 +213,11 @@ function handle_enter_room( socket, user_obj, callback ) {
     }
 
     const player = rooms.get_user_by_user_id_in_room(user_id, room_name);
+    if(!player) {
+        callback(false, "Nome de usuário indisponível!");
+        return;
+    }
+
     if(player.was_banned) {
         callback(false, `Você foi banido dessa sala`);
         return;
@@ -459,13 +468,29 @@ function handle_kick_player_out(socket, player_name, callback) {
     const room_name = rooms.get_room_name_by_socket_id( socket.id );
     if( !room_name ) { callback(`Você precisa estar em uma sala`) }
 
+    const host = rooms.get_room_host(room_name);
+    if(host.id != socket.id) { callback(`only the host has permission`); return; }
+
     const player = rooms.get_user_by_username_in_room(player_name, room_name);
     rooms.disconnect_user(player.id);
     rooms.ban_user(room_name, player_name);
-    io.to(room_name).emit('LEFT_ROOM', player, rooms.get_room_by_name(room_name));
-    //socket.leave(room_name);
     io.sockets.sockets.get(player.id).leave(room_name);
     io.to(player.id).emit('PLAYER_BANNED');
+    io.to(room_name).emit('PLAYER_BAN', player_name, rooms.get_room_by_name(room_name));
     console.log(`Disconnected ${player.id} from room ${room_name}`);
+}
+
+function handle_give_host(socket, player_name, callback) {
+    const room_name = rooms.get_room_name_by_socket_id( socket.id );
+    if( !room_name ) { callback(`Você precisa estar em uma sala`); return; }
+
+    const host = rooms.get_room_host(room_name);
+    if(host.id != socket.id) { callback(`only the host has permission`); return; }
+
+    const new_host = rooms.get_user_by_username_in_room(player_name, room_name);
+    new_host.is_host = true;
+    rooms.get_user_by_socket_id_in_room(socket.id, room_name).is_host = false;
+
+    io.to(room_name).emit('GIVE_HOST', player_name, rooms.get_room_by_name(room_name));
 }
 // #endregion

@@ -314,7 +314,7 @@ function remove_player_click_div() {
 }
 function kick_player_out(player_name) {
     socket.emit('KICK_PLAYER_OUT', player_name, msg => {
-
+        console.log(msg);
     });
     
     const players_spans = document.querySelectorAll('.player>div>span');
@@ -328,7 +328,10 @@ function kick_player_out(player_name) {
     remove_player_click_div();
 }
 function give_host_to(player_name) {
-    console.log(`Giving host to ${player_name}...`);
+    socket.emit('GIVE_HOST', player_name, msg => {
+        console.log(msg);
+    });
+    remove_player_click_div();
 }
 
 /* #region Animations */
