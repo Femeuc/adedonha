@@ -424,6 +424,23 @@ main h2 {
     background-color: var(--Dark-bg);
     cursor: pointer;
 }
+ #stream_mode, #stream_mode * {
+    cursor: pointer;
+}
+ #stream_mode {
+    position: absolute;
+    display: flex;
+    bottom: 50px;
+    pointer-events: auto !important;
+}
+ #stream_mode input {
+    margin-right: 10px;
+    pointer-events: none;
+}
+ #stream_mode label {
+    white-space: nowrap;
+    pointer-events: none;
+}
 /* #endregion */
 
 /* #region Validation state */

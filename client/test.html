@@ -1,8 +1,74 @@
-<h1>hello</h1>
+<style>
+  body {
+    background-image: url('./images/website_background.png');
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+  }
+  #p {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 15px;
+    background: #43b16f;
+    width: fit-content;
+    box-shadow: 0px 13px 0px 5px #0e593e, 0px -3px 0px 5px #0e593e, 0px 25px 0px 0px black;
+    padding: 20px;
+    border-radius: 15px;
+  }
+  #p div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #p div span:nth-child(2){
+    background-color: rgba(0,0,0,.1);
+    padding: 5px;
+  }
+</style>
+<div id="p">
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+  <div><span>Tópico</span><span>...</span></div>
+</div>
 <script>
+    const fields = document.querySelectorAll('#p div');
+    update();
+
+    function update() {
+      const local_data = localStorage.getItem('answers_stream_mode');
+      if(!local_data) {
+        reset_fields();
+        return;
+      }
+      update_fields(JSON.parse(local_data));
+    }
+
+    function update_fields(data) {
+      for (let i = 0; i < fields.length; i++) {
+        fields[i].firstElementChild.innerText = data[i].topic;
+        if(data[i].answer == '') {
+          fields[i].lastElementChild.innerText = '...';      
+          continue;
+        }
+        fields[i].lastElementChild.innerText = data[i].answer;
+      }
+    }
     window.addEventListener('storage', () => {
-  // When local storage changes, dump the list to
-  // the console.
-  alert(localStorage.getItem('test'))
-});
+      update();
+    });
+
+    function reset_fields() {
+      for (let i = 0; i < fields.length; i++) {
+        fields[i].firstElementChild.innerText = 'Tópico';
+        fields[i].lastElementChild.innerText = '...';
+      }  
+    }
 </script>

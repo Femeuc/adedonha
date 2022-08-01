@@ -181,43 +181,47 @@
             <div id="inputs_div">
                 <label class="input-div" for="cb1">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div" for="cb1">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div" for="cb1">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div" for="cb1">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
                 <label class="input-div" for="cb1">
                     <div>...</div>
-                    <input type="text">
+                    <input type="text" onchange="streamer_mode('update')">
                 </label>
             </div>
             <div id="time">
                 <div id="time_bar"></div>
+            </div>
+            <div id="stream_mode" onclick="streamer_mode('switch')">
+                <input type="checkbox" name="streamer_mode" id="streamer_mode"> 
+                <label for="streamer_mode">Modo streamer</label>
             </div>
             <button onclick="submit_answers()">Terminei</button>
         </section>

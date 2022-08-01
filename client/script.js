@@ -223,6 +223,7 @@ function start() {
     socket.emit('START', msg => {
         alert(msg);
     });
+    localStorage.setItem('answers_stream_mode', '');
 }
 
 function submit_answers() {
@@ -333,6 +334,51 @@ function give_host_to(player_name) {
     });
     remove_player_click_div();
 }
+
+const streamer_mode = function() {
+    let is_active = false;
+    const divs = document.querySelectorAll('#answers .input-div div');
+    const inputs = document.querySelectorAll('#answers .input-div input');
+    return function(type) {
+        if(type == 'is_active') return is_active;
+        if(type == 'switch') {
+            is_active = !is_active;
+            document.querySelector('#streamer_mode').checked = is_active;
+            if(is_active) {
+                hide_characters();
+                update_local_storage();
+                window.open('test.html', '_blank', 'popup');
+                return;
+            }
+            show_characters();
+            return;
+        }
+        if(type == 'update') {
+            update_local_storage();
+        }
+    };
+
+    function hide_characters() {
+        inputs.forEach( input => {
+            input.type = 'password';
+        });
+    }
+    function show_characters() {
+        inputs.forEach( input => {
+            input.type = 'text';
+        });
+    }
+    function update_local_storage() {
+        const fields = [];
+        for (let i = 0; i < divs.length; i++) {
+            fields.push({
+                topic: divs[i].innerText,
+                answer: inputs[i].value
+            })
+        }
+        localStorage.setItem('answers_stream_mode', JSON.stringify(fields));
+    }
+  }();
 
 /* #region Animations */
 function start_choosing_letter_animation(checkboxes) {
