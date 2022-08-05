@@ -124,7 +124,7 @@ function create_room( name ) {
                 Cor: false, 
                 Carro: false, "Doença ou Sintoma": false, 
                 "Disciplina": true, "Esporte": false,
-                "Famosos": false, "FSDA": true, "Jogo": true,
+                "Famosos": true, "FSDA": true, "Jogo": true,
                 "Líquido": false, Marca: false, 
                 "Pal. em inglês": true, "Pal. em espanhol": false,
                 "PCH": true, "Personagem": true,
