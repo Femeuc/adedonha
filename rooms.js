@@ -121,15 +121,14 @@ function create_room( name ) {
                 'Profissão': true
             },
             custom:  { 
-                Abstrato: false, Cor: false, 
-                Carro: false, "Doença ou Sintoma": true, 
-                "Disciplina": false, "Esporte": false,
-                "Famosos": false, "FSDA": true,
+                Cor: false, 
+                Carro: false, "Doença ou Sintoma": false, 
+                "Disciplina": true, "Esporte": false,
+                "Famosos": false, "FSDA": true, "Jogo": true,
                 "Líquido": false, Marca: false, 
-                "Objeto > 5m": false, "Objeto < 50cm": false,
                 "Pal. em inglês": true, "Pal. em espanhol": false,
                 "PCH": true, "Personagem": true,
-                'Rima com ÃO': false, 'Rima com ADE': true, "Rima com ENTE": true,
+                'Rima com ÃO': false, 'Rima com ADE': true, "Rima com ENTE": false,
                 'Rima com EZA': false, "Tem no supermercado": true, 
                 "Tem na escola": true,'Time de futebol': false, 
                 "Transporte": true, Verbo: true 
